@@ -1,14 +1,19 @@
 {
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module",
         "ecmaFeatures": {
             "jsx": true
         },
-        "parser": "@typescript-eslint/parser"
+        "project": "./tsconfig.json"
     },
     "plugins": [
-        "avesta-code-review"
+        "avesta-code-review",
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
         "avesta-code-review/react-props-helper": [

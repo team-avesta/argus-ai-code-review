@@ -4,7 +4,7 @@ Enforces the use of helper functions for complex prop objects in React component
 
 ## Rule Details
 
-This rule aims to prevent complex inline object literals in JSX props by requiring them to be extracted into helper functions.
+This rule aims to prevent complex inline object literals in JSX props by requiring them to be extracted into helper functions. It supports both JavaScript and TypeScript codebases, with special handling for type assertions and interfaces.
 
 ### What is considered "complex"?
 
@@ -13,81 +13,121 @@ An object literal is considered complex if it meets any of these criteria:
 - Contains more ternary operations than `maxTernaryOperations` (default: 1)
 - Contains template literals
 - Contains multiple function calls
-
-Additionally, the complexity threshold is automatically lowered for nested components to encourage cleaner code structure.
+- Is nested within another JSX component (lower threshold applies)
 
 ## Examples
 
 ### ❌ Incorrect
 
-```jsx
+```tsx
 // Too many properties
-<Card
-  data={{
-    bed: data.bedrooms,
-    bathroom: data.bathrooms,
-    heading: data.title,
-  }}
-/>
+interface CardData {
+  bed: number;
+  bathroom: number;
+  heading: string;
+}
+
+const MyComponent = () => (
+  <Card
+    data={{
+      bed: data.bedrooms,
+      bathroom: data.bathrooms,
+      heading: data.title,
+    } as CardData}
+  />
+);
 
 // Contains ternary operations
-<Info
-  content={{
-    title: isNew ? 'New Listing' : 'Property',
-    status: isPending ? 'Pending' : 'Available',
-  }}
-/>
+const StatusComponent = () => (
+  <Info
+    content={{
+      title: isNew ? 'New Listing' : 'Property',
+      status: isPending ? 'Pending' : 'Available',
+    }}
+  />
+);
 
 // Contains template literals
-<Address
-  location={{
-    full: `${street}, ${city}`,
-    short: `${city}, ${state}`,
-  }}
-/>
+const LocationComponent = () => (
+  <Address
+    location={{
+      full: `${street}, ${city}`,
+      short: `${city}, ${state}`,
+    }}
+  />
+);
 
 // Multiple function calls
-<Image
-  sources={{
-    main: getImageUrl(data.mainImage),
-    thumbnail: getImageUrl(data.thumbnail),
-  }}
-/>
+const ImageComponent = () => (
+  <Image
+    sources={{
+      main: getImageUrl(data.mainImage),
+      thumbnail: getImageUrl(data.thumbnail),
+    }}
+  />
+);
+
+// Nested components with complex props
+const NestedComponent = () => (
+  <Container>
+    <Card
+      data={{
+        title: getTitle(),
+        description: getDescription(),
+      }}
+    />
+  </Container>
+);
 ```
 
 ### ✅ Correct
 
-```jsx
-// Using helper function
-const getCardData = (data) => ({
+```tsx
+// Using helper function with TypeScript interface
+interface CardData {
+  bed: number;
+  bathroom: number;
+  heading: string;
+}
+
+const getCardData = (data: any): CardData => ({
   bed: data.bedrooms,
   bathroom: data.bathrooms,
   heading: data.title,
 });
 
-<Card data={getCardData(data)} />
+const MyComponent = () => (
+  <Card data={getCardData(data)} />
+);
 
 // Simple inline props are fine
-<Card
-  title="Simple String"
-  count={42}
-  isEnabled={true}
-/>
+const SimpleComponent = () => (
+  <Card
+    title="Simple String"
+    count={42}
+    isEnabled={true}
+  />
+);
 
 // Using spread operator with helper
-const getInfoContent = (isNew, isPending) => ({
+type InfoContent = {
+  title: string;
+  status: string;
+};
+
+const getInfoContent = (isNew: boolean, isPending: boolean): InfoContent => ({
   title: isNew ? 'New Listing' : 'Property',
   status: isPending ? 'Pending' : 'Available',
 });
 
-<Info content={getInfoContent(isNew, isPending)} />
+const InfoComponent = () => (
+  <Info content={getInfoContent(isNew, isPending)} />
+);
 ```
 
 ## Options
 
-The rule accepts the following options:
-
-```js
+```json
 {
   "react-props-helper": ["error", {
     "complexity": {
@@ -101,21 +141,21 @@ The rule accepts the following options:
 
 ### complexity.maxInlineProps
 
-Type: `number`
+Type: `number`  
 Default: `2`
 
-Maximum number of properties allowed in an inline object literal before requiring extraction to a helper function.
+Maximum number of properties allowed in an inline object literal before requiring extraction to a helper function. For nested components, this threshold is automatically lowered by 1.
 
 ### complexity.maxTernaryOperations
 
-Type: `number`
+Type: `number`  
 Default: `1`
 
 Maximum number of ternary operations allowed in an inline object literal before requiring extraction.
 
 ### complexity.ignoreProps
 
-Type: `string[]`
+Type: `string[]`  
 Default: `[]`
 
 List of prop names to ignore from this rule. Useful for props that commonly use inline objects (like `style`).
@@ -129,5 +169,5 @@ List of prop names to ignore from this rule. Useful for props that commonly use 
 ## Further Reading
 
 - [React Props Documentation](https://react.dev/learn/passing-props-to-a-component)
-- [JavaScript Object Literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#Object_literals)
+- [TypeScript with React](https://react-typescript-cheatsheet.netlify.app/)
 - [Clean Code in React](https://github.com/ryanmcdermott/clean-code-javascript#objects-and-data-structures) 
