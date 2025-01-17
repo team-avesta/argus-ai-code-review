@@ -16,6 +16,17 @@ const DEFAULT_CONFIG = {
     maxTernaryOperations: 1,
 };
 
+const SAFE_VISITOR_KEYS = [
+    'value',
+    'expression',
+    'left',
+    'right',
+    'object',
+    'property',
+    'elements',
+    'properties',
+];
+
 const rule: Rule.RuleModule = {
     meta: {
         type: 'suggestion',
@@ -23,7 +34,6 @@ const rule: Rule.RuleModule = {
             description: 'Enforce using helper functions for complex prop objects',
             category: 'Best Practices',
             recommended: true,
-            url: 'https://github.com/your-username/avesta-code-review/blob/main/docs/rules/react-props-helper.md',
         },
         schema: [
             {
@@ -69,28 +79,27 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                if (node.type === 'ConditionalExpression') {
-                    ternaryCount++;
-                } else if (node.type === 'TemplateLiteral') {
-                    hasTemplateString = true;
-                } else if (node.type === 'CallExpression') {
-                    hasFunctionCall = true;
+                switch (node.type) {
+                    case AST_NODE_TYPES.ConditionalExpression:
+                        ternaryCount++;
+                        break;
+                    case AST_NODE_TYPES.TemplateLiteral:
+                        hasTemplateString = true;
+                        break;
+                    case AST_NODE_TYPES.CallExpression:
+                        hasFunctionCall = true;
+                        break;
                 }
 
-                // Only visit specific AST node properties to avoid infinite recursion
-                const propertiesToVisit = ['value', 'expression', 'left', 'right', 'object', 'property'];
-                propertiesToVisit.forEach(prop => {
-                    if (node[prop] && typeof node[prop] === 'object') {
-                        visit(node[prop]);
+                // Visit only safe keys to prevent infinite recursion
+                SAFE_VISITOR_KEYS.forEach(key => {
+                    const value = node[key];
+                    if (Array.isArray(value)) {
+                        value.forEach(visit);
+                    } else if (value && typeof value === 'object') {
+                        visit(value);
                     }
                 });
-
-                if (Array.isArray(node.elements)) {
-                    node.elements.forEach(visit);
-                }
-                if (Array.isArray(node.properties)) {
-                    node.properties.forEach(visit);
-                }
             }
 
             node.properties.forEach((prop: Property) => visit(prop.value));
@@ -109,29 +118,35 @@ const rule: Rule.RuleModule = {
                     return;
                 }
 
-                // Check if the value is an object expression
-                if (
-                    node.value &&
-                    node.value.type === 'JSXExpressionContainer' &&
-                    node.value.expression.type === 'ObjectExpression'
-                ) {
-                    const objectExpression = node.value.expression;
-                    // Lower the threshold for nested components
-                    const sourceCode = context.getSourceCode();
-                    const isNested = sourceCode.getAncestors(node).some((ancestor: any) =>
-                        ancestor.type === 'JSXElement' &&
-                        ancestor.openingElement !== node.parent
-                    );
+                // Check if the value is an object expression (including type assertions)
+                if (node.value?.type === AST_NODE_TYPES.JSXExpressionContainer) {
+                    let objectExpression = node.value.expression;
 
-                    if (isNested) {
-                        config.maxInlineProps = Math.max(1, config.maxInlineProps - 1);
+                    // Handle type assertions (TSAsExpression)
+                    if (objectExpression.type === AST_NODE_TYPES.TSAsExpression) {
+                        objectExpression = objectExpression.expression;
                     }
 
-                    if (isComplexObjectLiteral(objectExpression)) {
-                        context.report({
-                            node: objectExpression,
-                            message: 'Complex props should be extracted into a helper function',
-                        });
+                    if (objectExpression.type === AST_NODE_TYPES.ObjectExpression) {
+                        // Lower the threshold for nested components
+                        const sourceCode = context.getSourceCode();
+                        const ancestors = sourceCode.getAncestors(node);
+                        const isNested = ancestors.some((ancestor: any) =>
+                            ancestor.type === AST_NODE_TYPES.JSXElement &&
+                            ancestor.openingElement !== node.parent
+                        );
+
+                        const localConfig = { ...config };
+                        if (isNested) {
+                            localConfig.maxInlineProps = Math.max(1, config.maxInlineProps - 1);
+                        }
+
+                        if (isComplexObjectLiteral(objectExpression)) {
+                            context.report({
+                                node: objectExpression,
+                                message: 'Complex props should be extracted into a helper function',
+                            });
+                        }
                     }
                 }
             },

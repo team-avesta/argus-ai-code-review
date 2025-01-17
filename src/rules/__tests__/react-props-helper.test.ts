@@ -1,58 +1,70 @@
 import { RuleTester } from 'eslint';
 import rule from '../react-props-helper';
 
-const ruleTester = new RuleTester();
+const ruleTester = new RuleTester({
+    parser: require.resolve('@typescript-eslint/parser'),
+    parserOptions: {
+        ecmaVersion: 2018,
+        sourceType: 'module',
+        ecmaFeatures: { jsx: true }
+    }
+} as any);
 
-// Configure parser globally
+// Test cases with TypeScript types and interfaces
 ruleTester.run('react-props-helper', rule, {
     valid: [
         {
             code: `
-                const getSalesPropertiesDetails = (data) => ({
+                interface CardData {
+                    bed: number;
+                    bathroom: number;
+                    heading: string;
+                }
+
+                interface Props {
+                    data: CardData;
+                    showPlaceHolder?: boolean;
+                }
+
+                const getSalesPropertiesDetails = (data: any): CardData => ({
                     bed: data.bedrooms,
                     bathroom: data.bathrooms,
                     heading: data.title,
                 });
 
-                const MyComponent = () => (
+                const MyComponent: React.FC<Props> = () => (
                     <Card
                         data={getSalesPropertiesDetails(data)}
                         showPlaceHolder
                     />
                 );
             `,
-            parserOptions: {
-                ecmaVersion: 2018,
-                sourceType: 'module',
-                ecmaFeatures: {
-                    jsx: true,
-                },
-                parser: '@typescript-eslint/parser',
-            },
-        } as any,
+        },
         {
             code: `
-                const MyComponent = () => (
+                interface StyleProps {
+                    color: string;
+                    width?: number;
+                }
+
+                const MyComponent: React.FC = () => (
                     <Card
                         title="Simple String"
                         count={42}
                         isEnabled={true}
-                        style={{ color: 'red' }}
+                        style={{ color: 'red', width: 100 }}
                     />
                 );
             `,
-            parserOptions: {
-                ecmaVersion: 2018,
-                sourceType: 'module',
-                ecmaFeatures: {
-                    jsx: true,
-                },
-                parser: '@typescript-eslint/parser',
-            },
-        } as any,
+        },
         {
             code: `
-                const getCardProps = (data) => ({
+                type CardProps = {
+                    title: string;
+                    description: string;
+                };
+
+                const getCardProps = (data: any): CardProps => ({
                     title: data.title,
                     description: data.description,
                 });
@@ -64,70 +76,57 @@ ruleTester.run('react-props-helper', rule, {
                     />
                 );
             `,
-            parserOptions: {
-                ecmaVersion: 2018,
-                sourceType: 'module',
-                ecmaFeatures: {
-                    jsx: true,
-                },
-                parser: '@typescript-eslint/parser',
-            },
-        } as any,
+        },
     ],
     invalid: [
         {
             code: `
-                const MyComponent = () => (
+                interface CardData {
+                    bed: number;
+                    bathroom: number;
+                    heading: string;
+                }
+
+                const MyComponent: React.FC = () => (
                     <Card
                         data={{
                             bed: data.bedrooms,
                             bathroom: data.bathrooms,
                             heading: data.title,
-                        }}
+                        } as CardData}
                         showPlaceHolder
                     />
                 );
             `,
-            parserOptions: {
-                ecmaVersion: 2018,
-                sourceType: 'module',
-                ecmaFeatures: {
-                    jsx: true,
-                },
-                parser: '@typescript-eslint/parser',
-            },
             errors: [{
                 message: 'Complex props should be extracted into a helper function',
                 type: 'ObjectExpression',
             }],
-        } as any,
+        },
         {
             code: `
+                interface NestedData {
+                    title: string;
+                    description: string;
+                }
+
                 const MyComponent = () => (
                     <div>
                         <Card
                             data={{
-                                bed: data.bedrooms,
-                                bathroom: data.bathrooms,
+                                bed: isNewListing ? 0 : data.bedrooms,
+                                bathroom: isNewListing ? 0 : data.bathrooms,
                             }}
                         />
                         <Card
                             config={{
-                                title: data.title,
-                                description: data.description,
-                            }}
+                                title: \`\${data.title} - \${data.id}\`,
+                                description: getDescription(data),
+                            } as NestedData}
                         />
                     </div>
                 );
             `,
-            parserOptions: {
-                ecmaVersion: 2018,
-                sourceType: 'module',
-                ecmaFeatures: {
-                    jsx: true,
-                },
-                parser: '@typescript-eslint/parser',
-            },
             errors: [
                 {
                     message: 'Complex props should be extracted into a helper function',
@@ -138,6 +137,24 @@ ruleTester.run('react-props-helper', rule, {
                     type: 'ObjectExpression',
                 },
             ],
-        } as any,
+        },
+        {
+            code: `
+                const MyComponent = () => (
+                    <Card
+                        data={{
+                            title: getTitle(),
+                            description: getDescription(),
+                            image: getImage(),
+                            url: getUrl(),
+                        }}
+                    />
+                );
+            `,
+            errors: [{
+                message: 'Complex props should be extracted into a helper function',
+                type: 'ObjectExpression',
+            }],
+        },
     ],
 }); 
