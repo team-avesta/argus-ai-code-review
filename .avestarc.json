@@ -1,0 +1,27 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "parser": "@typescript-eslint/parser"
+    },
+    "plugins": [
+        "avesta-code-review"
+    ],
+    "rules": {
+        "avesta-code-review/react-props-helper": [
+            "error",
+            {
+                "complexity": {
+                    "maxInlineProps": 2,
+                    "maxTernaryOperations": 1,
+                    "ignoreProps": [
+                        "style"
+                    ]
+                }
+            }
+        ]
+    }
+}
