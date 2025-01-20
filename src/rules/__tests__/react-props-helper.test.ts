@@ -2,19 +2,19 @@ import { RuleTester } from 'eslint';
 import rule from '../react-props-helper';
 
 const ruleTester = new RuleTester({
-    parser: require.resolve('@typescript-eslint/parser'),
-    parserOptions: {
-        ecmaVersion: 2018,
-        sourceType: 'module',
-        ecmaFeatures: { jsx: true }
-    }
+  parser: require.resolve('@typescript-eslint/parser'),
+  parserOptions: {
+    ecmaVersion: 2018,
+    sourceType: 'module',
+    ecmaFeatures: { jsx: true },
+  },
 } as any);
 
 // Test cases with TypeScript types and interfaces
 ruleTester.run('react-props-helper', rule, {
-    valid: [
-        {
-            code: `
+  valid: [
+    {
+      code: `
                 interface CardData {
                     bed: number;
                     bathroom: number;
@@ -39,9 +39,9 @@ ruleTester.run('react-props-helper', rule, {
                     />
                 );
             `,
-        },
-        {
-            code: `
+    },
+    {
+      code: `
                 interface StyleProps {
                     color: string;
                     width?: number;
@@ -56,9 +56,9 @@ ruleTester.run('react-props-helper', rule, {
                     />
                 );
             `,
-        },
-        {
-            code: `
+    },
+    {
+      code: `
                 type CardProps = {
                     title: string;
                     description: string;
@@ -76,11 +76,11 @@ ruleTester.run('react-props-helper', rule, {
                     />
                 );
             `,
-        },
-    ],
-    invalid: [
-        {
-            code: `
+    },
+  ],
+  invalid: [
+    {
+      code: `
                 interface CardData {
                     bed: number;
                     bathroom: number;
@@ -98,13 +98,15 @@ ruleTester.run('react-props-helper', rule, {
                     />
                 );
             `,
-            errors: [{
-                message: 'Complex props should be extracted into a helper function',
-                type: 'ObjectExpression',
-            }],
-        },
+      errors: [
         {
-            code: `
+          message: 'Complex props should be extracted into a helper function',
+          type: 'ObjectExpression',
+        },
+      ],
+    },
+    {
+      code: `
                 interface NestedData {
                     title: string;
                     description: string;
@@ -127,19 +129,19 @@ ruleTester.run('react-props-helper', rule, {
                     </div>
                 );
             `,
-            errors: [
-                {
-                    message: 'Complex props should be extracted into a helper function',
-                    type: 'ObjectExpression',
-                },
-                {
-                    message: 'Complex props should be extracted into a helper function',
-                    type: 'ObjectExpression',
-                },
-            ],
+      errors: [
+        {
+          message: 'Complex props should be extracted into a helper function',
+          type: 'ObjectExpression',
         },
         {
-            code: `
+          message: 'Complex props should be extracted into a helper function',
+          type: 'ObjectExpression',
+        },
+      ],
+    },
+    {
+      code: `
                 const MyComponent = () => (
                     <Card
                         data={{
@@ -151,10 +153,12 @@ ruleTester.run('react-props-helper', rule, {
                     />
                 );
             `,
-            errors: [{
-                message: 'Complex props should be extracted into a helper function',
-                type: 'ObjectExpression',
-            }],
+      errors: [
+        {
+          message: 'Complex props should be extracted into a helper function',
+          type: 'ObjectExpression',
         },
-    ],
-}); 
+      ],
+    },
+  ],
+});
