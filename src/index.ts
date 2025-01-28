@@ -2,8 +2,15 @@
 
 import { Command } from 'commander';
 import { ESLint } from 'eslint';
-import path from 'path';
 import chalk from 'chalk';
+import { glob } from 'glob';
+import path from 'path';
+import rules from './index-rule';
+
+// Register the plugin
+const plugin = {
+  rules: rules as any,
+};
 
 const program = new Command();
 
@@ -15,38 +22,37 @@ program
 program
   .command('check')
   .description('Check files for rule violations')
-  .argument('<files>', 'Files or patterns to check (e.g., "src/**/*.tsx")')
+  .argument('<patterns...>', 'Files or glob patterns to check (e.g., "src/**/*.tsx")')
   .option('-c, --config <path>', 'Path to config file', '.avestarc.json')
-  .action(async (files, options) => {
+  .action(async (patterns: string[], options) => {
     try {
+      const files = await glob(patterns, { ignore: ['node_modules/**'] });
+
+      if (files.length === 0) {
+        console.log(chalk.yellow('No files found matching the provided patterns'));
+        return;
+      }
+
       const eslint = new ESLint({
-        overrideConfigFile: options.config,
-        overrideConfig: {
+        baseConfig: {
+          parser: '@typescript-eslint/parser',
           parserOptions: {
             ecmaVersion: 2018,
             sourceType: 'module',
             ecmaFeatures: {
               jsx: true,
             },
-            parser: '@typescript-eslint/parser',
           },
-          plugins: ['avesta-code-review'],
-          rules: {
-            'avesta-code-review/react-props-helper': [
-              'error',
-              {
-                complexity: {
-                  maxInlineProps: 2,
-                  maxTernaryOperations: 1,
-                  ignoreProps: ['style'],
-                },
-              },
-            ],
-          },
+          plugins: ['avesta'],
+          rules: {},
         },
-        useEslintrc: false,
+        plugins: {
+          avesta: plugin,
+        },
+        overrideConfigFile: options.config,
         resolvePluginsRelativeTo: path.resolve(__dirname, '..'),
-      } as any);
+        useEslintrc: false,
+      });
 
       const results = await eslint.lintFiles(files);
       const formatter = await eslint.loadFormatter('stylish');

@@ -1,32 +1,26 @@
 {
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "project": "./tsconfig.json"
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
     },
-    "plugins": [
-        "avesta-code-review",
-        "@typescript-eslint"
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["avesta-code-review", "@typescript-eslint"],
+  "extends": ["plugin:@typescript-eslint/recommended"],
+  "rules": {
+    "avesta-code-review/react-props-helper": [
+      "error",
+      {
+        "complexity": {
+          "maxInlineProps": 2,
+          "maxTernaryOperations": 1,
+          "ignoreProps": ["style"]
+        }
+      }
     ],
-    "extends": [
-        "plugin:@typescript-eslint/recommended"
-    ],
-    "rules": {
-        "avesta-code-review/react-props-helper": [
-            "error",
-            {
-                "complexity": {
-                    "maxInlineProps": 2,
-                    "maxTernaryOperations": 1,
-                    "ignoreProps": [
-                        "style"
-                    ]
-                }
-            }
-        ]
-    }
+    "avesta-code-review/prometheus-label-config": "error"
+  }
 }

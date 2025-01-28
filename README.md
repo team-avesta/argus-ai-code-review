@@ -8,8 +8,8 @@ A CLI tool for automated code review and best practices analysis in TypeScript p
 - Best practices validation
 - Code pattern detection
 - Customizable rule sets
-- CI/CD integration support
-- HTML and JSON report generation
+- ESLint-based rule engine
+- Detailed error reporting
 
 ## Installation
 
@@ -34,10 +34,10 @@ npm link
 
 ```bash
 # Basic usage
-avesta-review analyze <path-to-code>
+avesta-review check <path-to-code>
 
 # With custom config
-avesta-review analyze <path-to-code> --config <path-to-config>
+avesta-review check <path-to-code> --config <path-to-config>
 ```
 
 ## Configuration
@@ -47,25 +47,35 @@ Create a `.avestarc.json` file in your project root:
 ```json
 {
   "rules": {
-    "naming-convention": "error",
-    "max-line-length": ["warn", 100],
-    "no-any": "error"
-  },
-  "ignore": [
-    "node_modules/**",
-    "dist/**"
-  ]
+    "avesta-code-review/react-props-helper": ["error", {
+      "complexity": {
+        "maxInlineProps": 2,
+        "maxTernaryOperations": 1,
+        "ignoreProps": ["style"]
+      }
+    }],
+    "avesta-code-review/prometheus-label-config": "error"
+  }
 }
 ```
 
 ## Available Rules
 
-- Naming Conventions
-- Code Structure
-- Type Safety
-- Performance Patterns
-- Security Best Practices
-- And more...
+### react-props-helper
+
+Enforces best practices for React props complexity:
+
+- Limits inline props
+- Controls ternary operation nesting
+- Configurable prop ignoring
+
+### prometheus-label-config
+
+Validates Prometheus label configurations:
+
+- Enforces proper query structure
+- Validates label format
+- Prevents empty queries
 
 ## Development
 
@@ -97,8 +107,8 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 
 ## Roadmap
 
-- [ ] Add support for React best practices
+- [ ] Add more React best practices rules
 - [ ] Implement custom rule creation
 - [ ] Add auto-fix capabilities
 - [ ] Integrate with popular IDEs
-- [ ] Add support for more frameworks 
+- [ ] Add support for more frameworks
