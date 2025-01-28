@@ -42,9 +42,16 @@ program
             ecmaFeatures: {
               jsx: true,
             },
+            project: null,
           },
+          extends: [],
           plugins: ['avesta'],
           rules: {},
+          ignorePatterns: ['node_modules/**'],
+          env: {
+            node: true,
+            es6: true,
+          },
         },
         plugins: {
           avesta: plugin,
@@ -52,6 +59,9 @@ program
         overrideConfigFile: options.config,
         resolvePluginsRelativeTo: path.resolve(__dirname, '..'),
         useEslintrc: false,
+        overrideConfig: {
+          plugins: ['avesta'],
+        },
       });
 
       const results = await eslint.lintFiles(files);
