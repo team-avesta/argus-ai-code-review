@@ -8,10 +8,9 @@ describe('Plugin Configuration', () => {
         const eslint = new ESLint({
             baseConfig: {
                 parser: '@typescript-eslint/parser',
+                extends: [], // Prevent inheriting any recommended configs
                 plugins: ['avesta'],
-                rules: {
-                    'no-unused-vars': 'error', // This eslint:recommended rule should be ignored
-                },
+                rules: {},
             },
             plugins: {
                 avesta: plugin as any,

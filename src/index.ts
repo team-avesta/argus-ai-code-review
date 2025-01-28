@@ -42,26 +42,25 @@ program
                         ecmaFeatures: {
                             jsx: true,
                         },
-                        project: null,
                     },
                     extends: [],
-                    plugins: ['avesta'],
+                    plugins: ['@typescript-eslint', 'avesta'],
                     rules: {},
                     ignorePatterns: ['node_modules/**'],
                     env: {
                         node: true,
                         es6: true,
                     },
-                },
+                } as any,
                 plugins: {
                     avesta: plugin,
                 },
                 overrideConfigFile: options.config,
-                resolvePluginsRelativeTo: path.resolve(__dirname, '..'),
                 useEslintrc: false,
                 overrideConfig: {
                     plugins: ['avesta'],
-                },
+                    rules: {},
+                } as any,
             });
 
             const results = await eslint.lintFiles(files);
