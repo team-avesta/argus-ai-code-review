@@ -1,10 +1,10 @@
 {
-  "name": "eslint-plugin-avesta-code-review",
+  "name": "avesta-code-review",
   "version": "1.0.0",
   "description": "A CLI-based code review tool to analyze and enforce best practices",
   "main": "dist/index-rule.js",
   "bin": {
-    "avesta-review": "./dist/index.js"
+    "avesta-code-review": "./dist/index.js"
   },
   "exports": {
     ".": "./dist/index-rule.js"

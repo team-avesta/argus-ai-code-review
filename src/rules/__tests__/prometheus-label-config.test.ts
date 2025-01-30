@@ -9,7 +9,7 @@ const ruleTester = new TSESLint.RuleTester({
   },
 });
 
-ruleTester.run('prometheus-label-config', rule, {
+ruleTester.run('avesta-code-review/prometheus-label-config', rule, {
   valid: [
     // Basic valid cases with additional fields
     {
