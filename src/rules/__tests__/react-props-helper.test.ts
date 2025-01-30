@@ -8,7 +8,10 @@ const ruleTester = new RuleTester({
     sourceType: 'module',
     ecmaFeatures: { jsx: true },
   },
-} as any);
+} as {
+  parser: string;
+  parserOptions: { ecmaVersion: number; sourceType: string; ecmaFeatures: { jsx: boolean } };
+});
 
 // Test cases with TypeScript types and interfaces
 ruleTester.run('avesta-code-review/react-props-helper', rule, {
@@ -26,7 +29,13 @@ ruleTester.run('avesta-code-review/react-props-helper', rule, {
                     showPlaceHolder?: boolean;
                 }
 
-                const getSalesPropertiesDetails = (data: any): CardData => ({
+                interface PropertyData {
+                    bedrooms: number;
+                    bathrooms: number;
+                    title: string;
+                }
+
+                const getSalesPropertiesDetails = (data: PropertyData): CardData => ({
                     bed: data.bedrooms,
                     bathroom: data.bathrooms,
                     heading: data.title,
@@ -77,6 +86,21 @@ ruleTester.run('avesta-code-review/react-props-helper', rule, {
                 );
             `,
     },
+    {
+      // Now valid since we're not checking ternary operations
+      code: `
+                const MyComponent = () => (
+                    <div>
+                        <Card
+                            data={{
+                                bed: isNewListing ? 0 : data.bedrooms,
+                                bathroom: isNewListing ? 0 : data.bathrooms,
+                            }}
+                        />
+                    </div>
+                );
+            `,
+    },
   ],
   invalid: [
     {
@@ -115,25 +139,16 @@ ruleTester.run('avesta-code-review/react-props-helper', rule, {
                 const MyComponent = () => (
                     <div>
                         <Card
-                            data={{
-                                bed: isNewListing ? 0 : data.bedrooms,
-                                bathroom: isNewListing ? 0 : data.bathrooms,
-                            }}
-                        />
-                        <Card
                             config={{
                                 title: \`\${data.title} - \${data.id}\`,
                                 description: getDescription(data),
+                                extraInfo: data.info,
                             } as NestedData}
                         />
                     </div>
                 );
             `,
       errors: [
-        {
-          message: 'Complex props should be extracted into a helper function',
-          type: 'ObjectExpression',
-        },
         {
           message: 'Complex props should be extracted into a helper function',
           type: 'ObjectExpression',

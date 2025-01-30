@@ -1,13 +1,16 @@
 {
-  "plugins": ["avesta-code-review"],
+  "plugins": [
+    "avesta-code-review"
+  ],
   "rules": {
     "avesta-code-review/react-props-helper": [
       "error",
       {
         "complexity": {
           "maxInlineProps": 2,
-          "maxTernaryOperations": 1,
-          "ignoreProps": ["style"]
+          "ignoreProps": [
+            "style"
+          ]
         }
       }
     ],

@@ -13,7 +13,6 @@ interface ObjectExpression {
 
 const DEFAULT_CONFIG = {
   maxInlineProps: 2,
-  maxTernaryOperations: 1,
 };
 
 const SAFE_VISITOR_KEYS = [
@@ -43,7 +42,6 @@ const rule: Rule.RuleModule = {
             type: 'object',
             properties: {
               maxInlineProps: { type: 'number' },
-              maxTernaryOperations: { type: 'number' },
               ignoreProps: {
                 type: 'array',
                 items: { type: 'string' },
@@ -68,8 +66,6 @@ const rule: Rule.RuleModule = {
         return true;
       }
 
-      // Count ternary operations and complex expressions
-      let ternaryCount = 0;
       let hasTemplateString = false;
       let hasFunctionCall = false;
 
@@ -80,9 +76,6 @@ const rule: Rule.RuleModule = {
         }
 
         switch (node.type) {
-          case AST_NODE_TYPES.ConditionalExpression:
-            ternaryCount++;
-            break;
           case AST_NODE_TYPES.TemplateLiteral:
             hasTemplateString = true;
             break;
@@ -104,11 +97,7 @@ const rule: Rule.RuleModule = {
 
       node.properties.forEach((prop: Property) => visit(prop.value));
 
-      return (
-        ternaryCount > config.maxTernaryOperations ||
-        hasTemplateString ||
-        (hasFunctionCall && node.properties.length > 1)
-      );
+      return hasTemplateString || (hasFunctionCall && node.properties.length > 1);
     }
 
     return {
