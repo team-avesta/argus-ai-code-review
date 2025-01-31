@@ -9,8 +9,8 @@ This rule aims to prevent complex inline object literals in JSX props by requiri
 ### What is considered "complex"?
 
 An object literal is considered complex if it meets any of these criteria:
+
 - Has more properties than `maxInlineProps` (default: 2)
-- Contains more ternary operations than `maxTernaryOperations` (default: 1)
 - Contains template literals
 - Contains multiple function calls
 - Is nested within another JSX component (lower threshold applies)
@@ -29,21 +29,13 @@ interface CardData {
 
 const MyComponent = () => (
   <Card
-    data={{
-      bed: data.bedrooms,
-      bathroom: data.bathrooms,
-      heading: data.title,
-    } as CardData}
-  />
-);
-
-// Contains ternary operations
-const StatusComponent = () => (
-  <Info
-    content={{
-      title: isNew ? 'New Listing' : 'Property',
-      status: isPending ? 'Pending' : 'Available',
-    }}
+    data={
+      {
+        bed: data.bedrooms,
+        bathroom: data.bathrooms,
+        heading: data.title,
+      } as CardData
+    }
   />
 );
 
@@ -96,18 +88,10 @@ const getCardData = (data: any): CardData => ({
   heading: data.title,
 });
 
-const MyComponent = () => (
-  <Card data={getCardData(data)} />
-);
+const MyComponent = () => <Card data={getCardData(data)} />;
 
 // Simple inline props are fine
-const SimpleComponent = () => (
-  <Card
-    title="Simple String"
-    count={42}
-    isEnabled={true}
-  />
-);
+const SimpleComponent = () => <Card title="Simple String" count={42} isEnabled={true} />;
 
 // Using spread operator with helper
 type InfoContent = {
@@ -115,27 +99,27 @@ type InfoContent = {
   status: string;
 };
 
-const getInfoContent = (isNew: boolean, isPending: boolean): InfoContent => ({
-  title: isNew ? 'New Listing' : 'Property',
-  status: isPending ? 'Pending' : 'Available',
+const getInfoContent = (data: any): InfoContent => ({
+  title: data.title,
+  status: data.status,
 });
 
-const InfoComponent = () => (
-  <Info content={getInfoContent(isNew, isPending)} />
-);
+const InfoComponent = () => <Info content={getInfoContent(data)} />;
 ```
 
 ## Options
 
 ```json
 {
-  "react-props-helper": ["error", {
-    "complexity": {
-      "maxInlineProps": 2,        // Maximum number of properties allowed inline
-      "maxTernaryOperations": 1,  // Maximum number of ternary operations allowed
-      "ignoreProps": ["style"]    // Props to ignore from the rule
+  "react-props-helper": [
+    "error",
+    {
+      "complexity": {
+        "maxInlineProps": 2, // Maximum number of properties allowed inline
+        "ignoreProps": ["style"] // Props to ignore from the rule
+      }
     }
-  }]
+  ]
 }
 ```
 
@@ -145,13 +129,6 @@ Type: `number`
 Default: `2`
 
 Maximum number of properties allowed in an inline object literal before requiring extraction to a helper function. For nested components, this threshold is automatically lowered by 1.
-
-### complexity.maxTernaryOperations
-
-Type: `number`  
-Default: `1`
-
-Maximum number of ternary operations allowed in an inline object literal before requiring extraction.
 
 ### complexity.ignoreProps
 
@@ -170,4 +147,4 @@ List of prop names to ignore from this rule. Useful for props that commonly use 
 
 - [React Props Documentation](https://react.dev/learn/passing-props-to-a-component)
 - [TypeScript with React](https://react-typescript-cheatsheet.netlify.app/)
-- [Clean Code in React](https://github.com/ryanmcdermott/clean-code-javascript#objects-and-data-structures) 
+- [Clean Code in React](https://github.com/ryanmcdermott/clean-code-javascript#objects-and-data-structures)

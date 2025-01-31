@@ -28,13 +28,15 @@ You can configure these rules in your `.avestarc.json` file:
 ```json
 {
   "rules": {
-    "react-props-helper": ["error", {
-      "complexity": {
-        "maxInlineProps": 2,
-        "maxTernaryOperations": 1,
-        "ignoreProps": ["style"]
+    "react-props-helper": [
+      "error",
+      {
+        "complexity": {
+          "maxInlineProps": 2,
+          "ignoreProps": ["style"]
+        }
       }
-    }],
+    ],
     "prometheus-label-config": "error"
   }
 }
