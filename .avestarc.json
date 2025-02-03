@@ -14,6 +14,21 @@
         }
       }
     ],
-    "avesta-code-review/prometheus-label-config": "error"
+    "avesta-code-review/prometheus-label-config": "error",
+    "avesta-code-review/handle-negative-first": [
+      "error",
+      {
+        "maxNestingDepth": 1,
+        "enforceThrow": false,
+        "allowSingleNesting": false,
+        "checkArrowFunctions": true,
+        "checkAsyncFunctions": true,
+        "checkGenerators": true,
+        "checkTernaries": true,
+        "checkTryCatch": true,
+        "enforceEarlyReturn": true,
+        "maxElseDepth": 2
+      }
+    ]
   }
 }
