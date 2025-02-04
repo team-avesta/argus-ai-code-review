@@ -97,6 +97,32 @@ ruleTester.run('avesta-code-review/prometheus-label-config', rule, {
         });
       `,
     },
+    // Valid case with label and extra properties
+    {
+      code: `
+        const config = {
+          queryIdentifier: 'api_request',
+          prometheusLabels: {
+            label: 'new-developments/content/banners',
+            isBot: true,
+            extraData: 'some-value'
+          }
+        };
+      `,
+    },
+    // Valid case with query and extra properties
+    {
+      code: `
+        const config = {
+          queryIdentifier: 'db_query',
+          prometheusLabels: {
+            query: 'getSuggestions',
+            metrics: true,
+            extraData: 'some-value'
+          }
+        };
+      `,
+    },
   ],
   invalid: [
     // Empty prometheusLabels.query with other fields
@@ -111,7 +137,7 @@ ruleTester.run('avesta-code-review/prometheus-label-config', rule, {
           timeout: 5000
         };
       `,
-      errors: [{ messageId: 'emptyPrometheusQuery' }],
+      errors: [{ messageId: 'emptyPrometheusIdentifier' }],
     },
     // Missing prometheusLabels.query with other fields
     {
@@ -123,7 +149,7 @@ ruleTester.run('avesta-code-review/prometheus-label-config', rule, {
           cache: { enabled: true }
         };
       `,
-      errors: [{ messageId: 'missingPrometheusQuery' }],
+      errors: [{ messageId: 'missingPrometheusIdentifier' }],
     },
     // Invalid prometheusLabels structure (null) with other fields
     {
@@ -149,7 +175,7 @@ ruleTester.run('avesta-code-review/prometheus-label-config', rule, {
           retries: 3
         };
       `,
-      errors: [{ messageId: 'invalidPrometheusQueryType' }],
+      errors: [{ messageId: 'invalidPrometheusIdentifierType' }],
     },
     // Invalid prometheusLabels.query type (boolean) with other fields
     {
@@ -163,22 +189,46 @@ ruleTester.run('avesta-code-review/prometheus-label-config', rule, {
           cache: { ttl: 6000 }
         };
       `,
-      errors: [{ messageId: 'invalidPrometheusQueryType' }],
+      errors: [{ messageId: 'invalidPrometheusIdentifierType' }],
     },
-    // prometheusLabels with extra properties with other fields
+    // Empty prometheusLabels.label
     {
       code: `
         const config = {
-          sql: 'SELECT * FROM users',
-          queryIdentifier: 'get_users',
+          queryIdentifier: 'api_request',
           prometheusLabels: {
-            query: 'select_users',
-            extraProp: 'not_allowed'
-          },
-          timeout: 5000
+            label: '',
+            isBot: true
+          }
         };
       `,
-      errors: [{ messageId: 'extraPrometheusProperties' }],
+      errors: [{ messageId: 'emptyPrometheusIdentifier' }],
+    },
+    // Invalid label type (number)
+    {
+      code: `
+        const config = {
+          queryIdentifier: 'api_request',
+          prometheusLabels: {
+            label: 123,
+            isBot: true
+          }
+        };
+      `,
+      errors: [{ messageId: 'invalidPrometheusIdentifierType' }],
+    },
+    // Missing both query and label
+    {
+      code: `
+        const config = {
+          queryIdentifier: 'api_request',
+          prometheusLabels: {
+            isBot: true,
+            extraData: 'value'
+          }
+        };
+      `,
+      errors: [{ messageId: 'missingPrometheusIdentifier' }],
     },
   ],
 });

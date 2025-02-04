@@ -2,11 +2,10 @@ import { AST_NODE_TYPES, ESLintUtils } from '@typescript-eslint/utils';
 import type { TSESTree } from '@typescript-eslint/utils';
 
 type MessageIds =
-  | 'missingPrometheusQuery'
-  | 'emptyPrometheusQuery'
+  | 'missingPrometheusIdentifier'
+  | 'emptyPrometheusIdentifier'
   | 'invalidPrometheusLabels'
-  | 'invalidPrometheusQueryType'
-  | 'extraPrometheusProperties';
+  | 'invalidPrometheusIdentifierType';
 
 const createRule = ESLintUtils.RuleCreator((name) => `https://example.com/eslint/rules/${name}`);
 
@@ -18,11 +17,12 @@ export default createRule<[], MessageIds>({
       description: 'Enforces proper configuration for query methods using queryIdentifier',
     },
     messages: {
-      missingPrometheusQuery: "prometheusLabels must contain a 'query' property",
-      emptyPrometheusQuery: 'prometheusLabels.query cannot be empty',
+      missingPrometheusIdentifier:
+        "prometheusLabels must contain either a 'query' or 'label' property",
+      emptyPrometheusIdentifier: 'prometheusLabels.query or prometheusLabels.label cannot be empty',
       invalidPrometheusLabels: 'prometheusLabels must be an object',
-      invalidPrometheusQueryType: 'prometheusLabels.query must be a string',
-      extraPrometheusProperties: 'prometheusLabels should only contain the query property',
+      invalidPrometheusIdentifierType:
+        'prometheusLabels.query or prometheusLabels.label must be a string',
     },
     schema: [], // no options
   },
@@ -69,39 +69,30 @@ export default createRule<[], MessageIds>({
           (prop): prop is TSESTree.Property =>
             prop.type === AST_NODE_TYPES.Property &&
             prop.key.type === AST_NODE_TYPES.Identifier &&
-            prop.key.name === 'query',
+            (prop.key.name === 'query' || prop.key.name === 'label'),
         );
 
-        // Check if query property exists
+        // Check if either query or label property exists
         if (!queryProperty) {
           context.report({
             node: value,
-            messageId: 'missingPrometheusQuery',
+            messageId: 'missingPrometheusIdentifier',
           });
           return;
         }
 
-        // Check for extra properties
-        if (value.properties.length > 1) {
-          context.report({
-            node: value,
-            messageId: 'extraPrometheusProperties',
-          });
-          return;
-        }
-
-        // Check query value type and emptiness
+        // Check query/label value type and emptiness
         const queryValue = queryProperty.value;
         if (queryValue.type === AST_NODE_TYPES.Literal) {
           if (typeof queryValue.value !== 'string') {
             context.report({
               node: queryValue,
-              messageId: 'invalidPrometheusQueryType',
+              messageId: 'invalidPrometheusIdentifierType',
             });
           } else if (queryValue.value === '') {
             context.report({
               node: queryValue,
-              messageId: 'emptyPrometheusQuery',
+              messageId: 'emptyPrometheusIdentifier',
             });
           }
         }
