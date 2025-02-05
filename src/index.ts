@@ -8,7 +8,8 @@ import rules from './index-rule';
 
 // Register the plugin
 const plugin = {
-  rules: rules as any,
+  rules: rules.rules,
+  processors: rules.processors,
 };
 
 const program = new Command();
@@ -32,7 +33,7 @@ program
         return;
       }
 
-      const eslint = new ESLint({
+      const eslintConfig: any = {
         baseConfig: {
           parser: '@typescript-eslint/parser',
           parserOptions: {
@@ -50,7 +51,8 @@ program
             node: true,
             es6: true,
           },
-        } as any,
+          processor: 'avesta-code-review/.ts',
+        },
         plugins: {
           'avesta-code-review': plugin,
         },
@@ -59,8 +61,10 @@ program
         overrideConfig: {
           plugins: ['avesta-code-review'],
           rules: {},
-        } as any,
-      });
+        },
+      };
+
+      const eslint = new ESLint(eslintConfig);
 
       const results = await eslint.lintFiles(files);
       const formatter = await eslint.loadFormatter('stylish');
