@@ -203,4 +203,20 @@ class Service {
       expect(result.disabledRules).toEqual(new Set(['handle-negative-first']));
     });
   });
+
+  describe('JSX Comment Format', () => {
+    it('should handle JSX comment format', () => {
+      const sources = [
+        '{/* @avesta-disable-next-line rule1 */}',
+        '{/* @avesta-disable-next-line rule1,rule2 */}',
+        '{/* avesta-disable-next-line rule1 */}', // Also support without @
+      ];
+
+      sources.forEach((source) => {
+        const result = parseComments({ source, filename: 'test.tsx' });
+        const disabled = result.disabledLines.get(2);
+        expect(disabled?.has('rule1')).toBe(true);
+      });
+    });
+  });
 });

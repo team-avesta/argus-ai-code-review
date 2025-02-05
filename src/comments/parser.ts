@@ -5,13 +5,14 @@ import {
   InvalidRuleNameError,
 } from './types';
 
-// Patterns for detecting comments
-const DISABLE_NEXT_LINE_PATTERN = /^\s*\/\/\s*avesta-disable-next-line\s+(.+)$/;
-const DISABLE_FILE_PATTERN = /\/\*\s*avesta-disable\s+(.+?)\s*\*\//;
+// Update patterns to support both JS and JSX comments
+const DISABLE_NEXT_LINE_PATTERN =
+  /^\s*(?:\/\/\s*|{?\s*\/\*\s*@?)avesta-disable-next-line\s+(.+?)(?:\s*\*\/\s*})?$/;
+const DISABLE_FILE_PATTERN = /(?:{?\s*)?\/\*\s*(?:@?)avesta-disable\s+(.+?)\s*\*\/\s*}?/;
 const RULE_NAME_PATTERN = /^[a-z0-9-]+$/;
-const COMMENT_START_PATTERN = /^\s*(?:\/\/|\/\*)\s*avesta-disable/;
+const COMMENT_START_PATTERN = /^\s*(?:\/\/|{?\s*\/\*)\s*(?:@?)avesta-disable/;
 const INVALID_COMMENT_PATTERN =
-  /^\s*(?:\/\/|\/\*)\s*(?:disable|avesta-disable-(?!next-line)|avesta-disable\s*$)/;
+  /^\s*(?:\/\/|{?\s*\/\*)\s*(?:@?)(?:disable|avesta-disable-(?!next-line)|avesta-disable\s*$)/;
 
 /**
  * Validates a rule name against the allowed pattern
