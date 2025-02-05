@@ -43,11 +43,8 @@ const test = true;
       ];
 
       sources.forEach((source) => {
-        console.log('Testing source:', source);
         const result = parseComments({ source, filename: 'test.ts' });
-        console.log('Result:', result);
         const disabled = result.disabledLines.get(2);
-        console.log('Disabled:', disabled);
         expect(disabled?.has('rule1')).toBe(true);
       });
     });
