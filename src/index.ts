@@ -111,6 +111,8 @@ program
         console.log('\nRunning AI code review...');
         const aiReviewService = new AIReviewService();
         await aiReviewService.reviewStagedFiles();
+      } else {
+        console.log('\nAI code review is disabled');
       }
     } catch (error: unknown) {
       console.error(chalk.red('Error running checks:'), error);
