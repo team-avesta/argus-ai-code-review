@@ -2,6 +2,15 @@
   "plugins": [
     "avesta-code-review"
   ],
+  "settings": {
+    "aiReview": {
+      "enabled": true,
+      "ignorePatterns": [
+        "**/*.test.ts",
+        "**/*.spec.ts"
+      ]
+    }
+  },
   "rules": {
     "avesta-code-review/react-props-helper": [
       "error",

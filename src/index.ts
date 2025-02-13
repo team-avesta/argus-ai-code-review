@@ -4,7 +4,9 @@ import { Command } from 'commander';
 import { ESLint } from 'eslint';
 import chalk from 'chalk';
 import { glob } from 'glob';
+import * as fs from 'fs/promises';
 import rules from './index-rule';
+import { AIReviewService } from './services/ai-review-service';
 
 // Register the plugin
 const plugin = {
@@ -18,6 +20,16 @@ program
   .name('avesta-code-review')
   .description('CLI tool for automated code review and best practices analysis')
   .version('1.0.0');
+
+async function loadConfig(configPath: string) {
+  try {
+    const configContent = await fs.readFile(configPath, 'utf-8');
+    return JSON.parse(configContent);
+  } catch (error: unknown) {
+    console.error(chalk.red(`Error loading config from ${configPath}:`), error);
+    process.exit(1);
+  }
+}
 
 program
   .command('check')
@@ -33,6 +45,7 @@ program
         return;
       }
 
+      const config = await loadConfig(options.config);
       const eslintConfig: any = {
         baseConfig: {
           parser: '@typescript-eslint/parser',
@@ -87,12 +100,19 @@ program
           );
         }
         if (errorCount === 0 && warningCount === 0) {
-          console.log(chalk.green('\n✔ No issues found'));
+          console.log(chalk.green('\n✔ No ESLint issues found'));
         }
       } else {
-        console.log(chalk.green('✔ No issues found'));
+        console.log(chalk.green('✔ No ESLint issues found'));
       }
-    } catch (error) {
+
+      // Run AI review if enabled in config
+      if (config.settings?.aiReview?.enabled) {
+        console.log('\nRunning AI code review...');
+        const aiReviewService = new AIReviewService();
+        await aiReviewService.reviewStagedFiles();
+      }
+    } catch (error: unknown) {
       console.error(chalk.red('Error running checks:'), error);
       process.exit(1);
     }
