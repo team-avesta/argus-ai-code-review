@@ -1,14 +1,22 @@
 {
-  "plugins": [
-    "avesta-code-review"
-  ],
+  "plugins": ["avesta-code-review"],
   "settings": {
     "aiReview": {
       "enabled": true,
-      "ignorePatterns": [
-        "**/*.test.ts",
-        "**/*.spec.ts"
-      ]
+      "ignorePatterns": ["**/*.test.ts", "**/*.spec.ts"],
+      "rules": {
+        "function-length": {
+          "enabled": true,
+          "maxLines": 20
+        },
+        "function-complexity": {
+          "enabled": true,
+          "metrics": ["cyclomatic", "cognitive"]
+        },
+        "single-responsibility": {
+          "enabled": true
+        }
+      }
     }
   },
   "rules": {
@@ -17,9 +25,7 @@
       {
         "complexity": {
           "maxInlineProps": 2,
-          "ignoreProps": [
-            "style"
-          ]
+          "ignoreProps": ["style"]
         }
       }
     ],

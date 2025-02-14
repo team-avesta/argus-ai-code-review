@@ -12,23 +12,48 @@ File: <filename>
 Line: <line_number>
 Column: <column_number>
 Issue: <description>
-Length: <number_of_lines> (only for long function issues)
+Length: <number_of_lines> (only for long function issues)`;
 
-Example format:
-File: src/components/Button.tsx
-Line: 45
-Column: 12
-Issue: Function is 25 lines long and handles multiple responsibilities
-Length: 25`;
+export const RULE_PROMPTS = {
+  'function-length': `Check for functions longer than the specified maximum lines (excluding whitespace and brackets).
+Report functions that exceed this limit, providing the exact line count.
+Focus on function declarations, arrow functions, and method definitions.`,
 
-export const USER_PROMPTS = {
-  codeReview: `
-  Specifically check for:
-1. Functions longer than 20 lines (excluding whitespace and brackets)
-2. Complex functions that could be split into smaller ones
-3. Functions that violate Single Responsibility Principle`,
+  'function-complexity': `Identify complex functions that could be split into smaller ones.
+Look for:
+- Multiple levels of nesting
+- Complex conditional logic
+- Mixed levels of abstraction
+- Functions doing multiple operations in sequence
+Suggest specific ways to break down the function.`,
+
+  'single-responsibility': `Detect functions that violate the Single Responsibility Principle.
+Look for:
+- Functions handling multiple unrelated tasks
+- Mixed levels of abstraction
+- Functions with side effects
+- Functions that change behavior for different inputs
+Suggest how to split the responsibilities.`,
 };
 
-export const getPromptByType = (type: keyof typeof USER_PROMPTS): string => {
-  return USER_PROMPTS[type];
+export interface RuleConfig {
+  enabled: boolean;
+  maxLines?: number;
+  metrics?: Array<'cyclomatic' | 'cognitive'>;
+}
+
+export interface AIReviewConfig {
+  rules: {
+    'function-length'?: RuleConfig;
+    'function-complexity'?: RuleConfig;
+    'single-responsibility'?: RuleConfig;
+  };
+}
+
+export const getPromptForEnabledRules = (config: AIReviewConfig): string => {
+  const enabledRules = Object.entries(config.rules)
+    .filter(([, ruleConfig]) => ruleConfig?.enabled)
+    .map(([ruleName]) => RULE_PROMPTS[ruleName as keyof typeof RULE_PROMPTS]);
+
+  return enabledRules.join('\n\n');
 };

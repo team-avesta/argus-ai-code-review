@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
 import * as path from 'path';
 import { OpenAIReviewRepository } from '../repositories/openai-repository';
+import { AIReviewConfig } from '../prompts/system-prompts';
 
 export interface FileDiff {
   path: string;
@@ -11,8 +12,8 @@ export interface FileDiff {
 export class AIReviewService {
   private openAI: OpenAIReviewRepository;
 
-  constructor() {
-    this.openAI = new OpenAIReviewRepository();
+  constructor(config: AIReviewConfig) {
+    this.openAI = new OpenAIReviewRepository(config);
   }
 
   async getStagedFilesDiff(): Promise<FileDiff[]> {

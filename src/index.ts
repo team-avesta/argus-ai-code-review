@@ -7,6 +7,7 @@ import { glob } from 'glob';
 import * as fs from 'fs/promises';
 import rules from './index-rule';
 import { AIReviewService } from './services/ai-review-service';
+import { AIReviewConfig } from './prompts/system-prompts';
 
 // Register the plugin
 const plugin = {
@@ -109,7 +110,25 @@ program
       // Run AI review if enabled in config
       if (config.settings?.aiReview?.enabled) {
         console.log('\nRunning AI code review...');
-        const aiReviewService = new AIReviewService();
+        const aiReviewConfig: AIReviewConfig = {
+          rules: {
+            'function-length': {
+              enabled: config.settings.aiReview.rules?.['function-length']?.enabled ?? true,
+              maxLines: config.settings.aiReview.rules?.['function-length']?.maxLines ?? 20,
+            },
+            'function-complexity': {
+              enabled: config.settings.aiReview.rules?.['function-complexity']?.enabled ?? true,
+              metrics: config.settings.aiReview.rules?.['function-complexity']?.metrics ?? [
+                'cyclomatic',
+                'cognitive',
+              ],
+            },
+            'single-responsibility': {
+              enabled: config.settings.aiReview.rules?.['single-responsibility']?.enabled ?? true,
+            },
+          },
+        };
+        const aiReviewService = new AIReviewService(aiReviewConfig);
         await aiReviewService.reviewStagedFiles();
       } else {
         console.log('\nAI code review is disabled');
