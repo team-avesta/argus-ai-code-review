@@ -128,6 +128,16 @@ program
             },
           },
         };
+
+        // Check if at least one rule is enabled
+        const hasEnabledRule = Object.values(aiReviewConfig.rules).some((rule) => rule.enabled);
+        if (!hasEnabledRule) {
+          console.log(
+            chalk.yellow('\nWarning: AI code review skipped - at least one rule must be enabled'),
+          );
+          return;
+        }
+
         const aiReviewService = new AIReviewService(aiReviewConfig);
         await aiReviewService.reviewStagedFiles();
       } else {
