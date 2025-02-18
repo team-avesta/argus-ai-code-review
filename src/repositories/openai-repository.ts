@@ -47,6 +47,22 @@ export class OpenAIReviewRepository extends BaseAIReviewRepository {
   }
 
   protected extractResponseContent(data: any): string {
-    return data.choices[0].message.content;
+    const content = data.choices[0].message.content;
+    return this.formatResponseWithClickableLinks(content);
+  }
+
+  private formatResponseWithClickableLinks(content: string): string {
+    // Convert the AI response to include clickable file paths with ESLint format
+    const lines = content.split('\n');
+    return lines
+      .map((line) => {
+        // If it's a file path line (doesn't start with spaces), make it clickable
+        if (!line.startsWith('  ') && line.trim()) {
+          return line;
+        }
+        // For error lines, keep the format as is
+        return line;
+      })
+      .join('\n');
   }
 }

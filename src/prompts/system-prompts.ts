@@ -6,13 +6,17 @@ Important Rules:
 1. If you see a function call or reference to code that is marked as ignored (with @ai-review-ignore markers), DO NOT review or make assumptions about that code or its usage.
 2. Focus only on the visible implementation details, not on code that might be hidden or ignored.
 
-For each issue found, provide the following information in a structured format:
+For each issue found, provide the following information in this exact format:
 
-File: <filename>
-Line: <line_number>
-Column: <column_number>
-Issue: <description>
-Length: <number_of_lines> (only for long function issues)`;
+{filepath}
+  {line}:{column}  error  {description}  {rule-name}
+
+Note: 
+- Always use exact line numbers
+- Use column 0 if specific column is not relevant
+- Keep descriptions under 50 characters, focus on the core issue
+- Use the rule name that best matches the issue you found
+- Do not include suggestions in the description`;
 
 export const RULE_PROMPTS = {
   'function-length': `Check for functions longer than the specified maximum lines (excluding whitespace and brackets).
@@ -24,16 +28,14 @@ Look for:
 - Multiple levels of nesting
 - Complex conditional logic
 - Mixed levels of abstraction
-- Functions doing multiple operations in sequence
-Suggest specific ways to break down the function.`,
+- Functions doing multiple operations in sequence.`,
 
   'single-responsibility': `Detect functions that violate the Single Responsibility Principle.
 Look for:
 - Functions handling multiple unrelated tasks
 - Mixed levels of abstraction
 - Functions with side effects
-- Functions that change behavior for different inputs
-Suggest how to split the responsibilities.`,
+- Functions that change behavior for different inputs.`,
 };
 
 export interface RuleConfig {
