@@ -42,7 +42,7 @@ export class OpenAIReviewRepository extends BaseAIReviewRepository {
           content: `${rulePrompts}\n\n${prompt}`,
         },
       ],
-      temperature: 0.5,
+      temperature: 0,
     };
   }
 
