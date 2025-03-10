@@ -13,9 +13,21 @@ A CLI tool for automated code review and best practices analysis in TypeScript p
 
 ## Installation
 
+### From npm (recommended)
+
+```bash
+# Install globally
+npm install -g @team-avesta/avesta-code-review
+
+# Or install locally in your project
+npm install --save-dev @team-avesta/avesta-code-review
+```
+
+### From source
+
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/avesta-code-review.git
+git clone https://github.com/team-avesta/avesta-code-review.git
 
 # Navigate to project directory
 cd avesta-code-review
@@ -47,13 +59,16 @@ Create a `.avestarc.json` file in your project root:
 ```json
 {
   "rules": {
-    "avesta-code-review/react-props-helper": ["error", {
-      "complexity": {
-        "maxInlineProps": 2,
-        "maxTernaryOperations": 1,
-        "ignoreProps": ["style"]
+    "avesta-code-review/react-props-helper": [
+      "error",
+      {
+        "complexity": {
+          "maxInlineProps": 2,
+          "maxTernaryOperations": 1,
+          "ignoreProps": ["style"]
+        }
       }
-    }],
+    ],
     "avesta-code-review/prometheus-label-config": "error"
   }
 }

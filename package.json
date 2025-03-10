@@ -1,5 +1,5 @@
 {
-  "name": "avesta-code-review",
+  "name": "@team-avesta/avesta-code-review",
   "version": "1.0.0",
   "description": "A CLI-based code review tool to analyze and enforce best practices",
   "main": "dist/index-rule.js",
@@ -21,7 +21,8 @@
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "prepublishOnly": "npm run test && npm run build"
   },
   "keywords": [
     "code-review",
@@ -29,8 +30,19 @@
     "cli",
     "best-practices"
   ],
-  "author": "",
+  "author": "Team Avesta",
   "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/team-avesta/avesta-code-review.git"
+  },
+  "bugs": {
+    "url": "https://github.com/team-avesta/avesta-code-review/issues"
+  },
+  "homepage": "https://github.com/team-avesta/avesta-code-review#readme",
   "devDependencies": {
     "@types/eslint": "^8.56.0",
     "@types/jest": "^29.5.14",
