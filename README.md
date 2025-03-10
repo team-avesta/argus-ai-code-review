@@ -145,6 +145,16 @@ npm run release:minor  # 1.0.0 -> 1.1.0
 npm run release:major  # 1.0.0 -> 2.0.0
 ```
 
+### Continuous Integration and Deployment
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+- **Automatic npm Publishing**: When changes are pushed to the `main` branch, a GitHub Action automatically:
+  - Runs tests
+  - Generates a new version (if needed)
+  - Updates the CHANGELOG.md
+  - Publishes to npm
+
 ## License
 
 This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
