@@ -10,6 +10,7 @@ A CLI tool for automated code review and best practices analysis in TypeScript p
 - Customizable rule sets
 - ESLint-based rule engine
 - Detailed error reporting
+- AI-powered code review using OpenAI
 
 ## Installation
 
@@ -46,10 +47,10 @@ npm link
 
 ```bash
 # Basic usage
-avesta-review check <path-to-code>
+avesta-code-review check <path-to-code>
 
 # With custom config
-avesta-review check <path-to-code> --config <path-to-config>
+avesta-code-review check <path-to-code> --config <path-to-config>
 ```
 
 ## Configuration
@@ -69,7 +70,41 @@ Create a `.avestarc.json` file in your project root:
         }
       }
     ],
-    "avesta-code-review/prometheus-label-config": "error"
+    "avesta-code-review/prometheus-label-config": "error",
+    "avesta-code-review/handle-negative-first": [
+      "error",
+      {
+        "maxNestingDepth": 1,
+        "enforceThrow": false,
+        "allowSingleNesting": false,
+        "checkArrowFunctions": true,
+        "checkAsyncFunctions": true,
+        "checkGenerators": true,
+        "checkTernaries": true,
+        "checkTryCatch": true,
+        "enforceEarlyReturn": true,
+        "maxElseDepth": 2
+      }
+    ]
+  },
+  "settings": {
+    "aiReview": {
+      "enabled": true,
+      "ignorePatterns": ["**/*.test.ts", "**/*.spec.ts"],
+      "rules": {
+        "function-length": {
+          "enabled": true,
+          "maxLines": 20
+        },
+        "function-complexity": {
+          "enabled": true,
+          "metrics": ["cyclomatic", "cognitive"]
+        },
+        "single-responsibility": {
+          "enabled": true
+        }
+      }
+    }
   }
 }
 ```
@@ -91,6 +126,64 @@ Validates Prometheus label configurations:
 - Enforces proper query structure
 - Validates label format
 - Prevents empty queries
+
+### handle-negative-first
+
+Enforces handling negative conditions first to improve code readability and maintainability:
+
+- Limits nesting depth of conditional statements
+- Enforces early returns for negative conditions
+- Configurable options for different function types
+- Checks ternary expressions
+- Controls maximum else depth
+
+## AI-Powered Code Review
+
+The tool includes an AI-powered code review feature that uses OpenAI to analyze your code for:
+
+- Function length issues
+- Function complexity
+- Single responsibility principle violations
+
+To use this feature:
+
+1. Set up an OpenAI API key as an environment variable:
+
+   ```bash
+   export OPENAI_API_KEY=your_api_key_here
+   ```
+
+2. Enable AI review in your `.avestarc.json` configuration:
+
+   ```json
+   "settings": {
+     "aiReview": {
+       "enabled": true,
+       "ignorePatterns": ["**/*.test.ts", "**/*.spec.ts"],
+       "rules": {
+         "function-length": {
+           "enabled": true,
+           "maxLines": 20
+         },
+         "function-complexity": {
+           "enabled": true,
+           "metrics": ["cyclomatic", "cognitive"]
+         },
+         "single-responsibility": {
+           "enabled": true
+         }
+       }
+     }
+   }
+   ```
+
+3. Run the check command as usual:
+
+   ```bash
+   avesta-code-review check <path-to-code>
+   ```
+
+You can exclude specific code blocks from AI review by using the `@ai-review-ignore` marker in your comments.
 
 ## Development
 
@@ -166,3 +259,4 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 - [ ] Add auto-fix capabilities
 - [ ] Integrate with popular IDEs
 - [ ] Add support for more frameworks
+- [ ] Expand AI review capabilities
