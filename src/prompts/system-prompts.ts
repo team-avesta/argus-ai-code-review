@@ -45,6 +45,7 @@ export interface RuleConfig {
 }
 
 export interface AIReviewConfig {
+  model?: string;
   rules: {
     'function-length'?: RuleConfig;
     'function-complexity'?: RuleConfig;

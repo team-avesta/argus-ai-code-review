@@ -10,7 +10,7 @@ A CLI tool for automated code review and best practices analysis in TypeScript p
 - Customizable rule sets
 - ESLint-based rule engine
 - Detailed error reporting
-- AI-powered code review using OpenAI
+- AI-powered code review with support for multiple providers (OpenAI and Claude)
 
 ## Installation
 
@@ -90,6 +90,7 @@ Create a `.avestarc.json` file in your project root:
   "settings": {
     "aiReview": {
       "enabled": true,
+      "model": "gpt-4-turbo-preview",
       "ignorePatterns": ["**/*.test.ts", "**/*.spec.ts"],
       "rules": {
         "function-length": {
@@ -108,6 +109,26 @@ Create a `.avestarc.json` file in your project root:
   }
 }
 ```
+
+### AI Review Models
+
+The tool supports multiple AI models for code review:
+
+- OpenAI models: `gpt-4-turbo-preview`, `gpt-4`, `gpt-3.5-turbo`
+- Anthropic models: `claude-3-opus-20240229`, `claude-3-sonnet-20240229`, `claude-3-haiku-20240307`
+
+To use a specific model, set the `model` property in the `aiReview` settings. The tool will automatically determine which AI provider to use based on the model name.
+
+#### API Key Configuration
+
+Set your API key using the environment variable:
+
+```bash
+# Set your API key for the selected model
+AI_PROVIDER_API_KEY=your_api_key_here
+```
+
+The same environment variable is used for all AI providers. Make sure to use the appropriate API key for the model you've selected in your configuration.
 
 ## Available Rules
 
@@ -139,7 +160,7 @@ Enforces handling negative conditions first to improve code readability and main
 
 ## AI-Powered Code Review
 
-The tool includes an AI-powered code review feature that uses OpenAI to analyze your code for:
+The tool includes an AI-powered code review feature that can use either OpenAI or Claude models to analyze your code for:
 
 - Function length issues
 - Function complexity
@@ -147,18 +168,19 @@ The tool includes an AI-powered code review feature that uses OpenAI to analyze 
 
 To use this feature:
 
-1. Set up an OpenAI API key as an environment variable:
+1. Set up your API key as an environment variable:
 
    ```bash
-   export OPENAI_API_KEY=your_api_key_here
+   export AI_PROVIDER_API_KEY=your_api_key_here
    ```
 
-2. Enable AI review in your `.avestarc.json` configuration:
+2. Configure AI review in your `.avestarc.json` configuration:
 
    ```json
    "settings": {
      "aiReview": {
        "enabled": true,
+       "model": "gpt-4-turbo-preview", // or "claude-3-opus-20240229"
        "ignorePatterns": ["**/*.test.ts", "**/*.spec.ts"],
        "rules": {
          "function-length": {
@@ -183,7 +205,28 @@ To use this feature:
    avesta-code-review check <path-to-code>
    ```
 
-You can exclude specific code blocks from AI review by using the `@ai-review-ignore` marker in your comments.
+You can exclude specific code blocks from AI review by using the `@ai-review-ignore` markers in your comments:
+
+```typescript
+// @ai-review-ignore-start
+function complexFunctionToIgnore() {
+  // This function will be ignored by the AI review
+}
+// @ai-review-ignore-end
+```
+
+### Switching Between AI Providers
+
+The tool automatically selects the appropriate AI provider based on the model name:
+
+- Models starting with `gpt-` will use OpenAI
+- Models starting with `claude-` will use Anthropic's Claude
+
+You can also override the model in your configuration by setting the `AI_REVIEW_MODEL` environment variable:
+
+```bash
+export AI_REVIEW_MODEL=claude-3-sonnet-20240229
+```
 
 ## Development
 

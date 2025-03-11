@@ -12,6 +12,7 @@ export abstract class BaseAIReviewRepository {
 
   protected abstract getHeaders(): Promise<HeadersInit>;
   protected abstract formatRequestBody(prompt: string): unknown;
+  protected abstract extractResponseContent(data: any): string;
 
   async generateReview(filePath: string): Promise<void> {
     const prompt = await this.buildPrompt(filePath);
@@ -29,7 +30,7 @@ export abstract class BaseAIReviewRepository {
     }
 
     const data = await response.json();
-    console.log(data.choices[0].message.content);
+    console.log(this.extractResponseContent(data));
   }
 
   async generateBulkReview(files: FileDiff[]): Promise<void> {
@@ -60,7 +61,7 @@ export abstract class BaseAIReviewRepository {
     }
 
     const data = await response.json();
-    console.log(data.choices[0].message.content);
+    console.log(this.extractResponseContent(data));
   }
 
   protected async buildPrompt(filePath: string): Promise<string> {
@@ -75,5 +76,20 @@ export abstract class BaseAIReviewRepository {
       }
       throw new Error('Failed to read file: Unknown error');
     }
+  }
+
+  protected formatResponseWithClickableLinks(content: string): string {
+    // Convert the AI response to include clickable file paths with ESLint format
+    const lines = content.split('\n');
+    return lines
+      .map((line) => {
+        // If it's a file path line (doesn't start with spaces), make it clickable
+        if (!line.startsWith('  ') && line.trim()) {
+          return line;
+        }
+        // For error lines, keep the format as is
+        return line;
+      })
+      .join('\n');
   }
 }

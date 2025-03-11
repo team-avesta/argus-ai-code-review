@@ -111,6 +111,7 @@ program
       if (config.settings?.aiReview?.enabled) {
         console.log('\nRunning AI code review...');
         const aiReviewConfig: AIReviewConfig = {
+          model: config.settings.aiReview.model || process.env.AI_REVIEW_MODEL,
           rules: {
             'function-length': {
               enabled: config.settings.aiReview.rules?.['function-length']?.enabled ?? true,

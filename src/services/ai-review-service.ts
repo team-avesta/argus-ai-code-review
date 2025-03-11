@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
 import * as path from 'path';
-import { OpenAIReviewRepository } from '../repositories/openai-repository';
+import { BaseAIReviewRepository } from '../repositories/base-ai-repository';
+import { AIRepositoryFactory } from '../repositories/ai-repository-factory';
 import { AIReviewConfig } from '../prompts/system-prompts';
 
 export interface FileDiff {
@@ -10,10 +11,10 @@ export interface FileDiff {
 }
 
 export class AIReviewService {
-  private openAI: OpenAIReviewRepository;
+  private aiRepository: BaseAIReviewRepository;
 
   constructor(config: AIReviewConfig) {
-    this.openAI = new OpenAIReviewRepository(config);
+    this.aiRepository = AIRepositoryFactory.createRepository(config);
   }
 
   async getStagedFilesDiff(): Promise<FileDiff[]> {
@@ -98,6 +99,6 @@ export class AIReviewService {
     }
 
     console.log(`AI reviewing changes in ${stagedFiles.length} files...`);
-    await this.openAI.generateBulkReview(stagedFiles);
+    await this.aiRepository.generateBulkReview(stagedFiles);
   }
 }

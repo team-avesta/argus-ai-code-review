@@ -5,15 +5,15 @@ import {
   AIReviewConfig,
 } from '../prompts/system-prompts';
 
-export class OpenAIReviewRepository extends BaseAIReviewRepository {
-  protected readonly API_URL = 'https://api.openai.com/v1/chat/completions';
+export class ClaudeAIReviewRepository extends BaseAIReviewRepository {
+  protected readonly API_URL = 'https://api.anthropic.com/v1/messages';
   protected readonly MODEL_NAME: string;
   private config: AIReviewConfig;
 
   constructor(config: AIReviewConfig) {
     super();
     this.config = config;
-    this.MODEL_NAME = config.model || 'gpt-4-turbo-preview';
+    this.MODEL_NAME = config.model || 'claude-3-5-sonnet-20241022';
   }
 
   protected async getHeaders(): Promise<HeadersInit> {
@@ -25,7 +25,8 @@ export class OpenAIReviewRepository extends BaseAIReviewRepository {
 
     return {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
     };
   }
 
@@ -34,22 +35,29 @@ export class OpenAIReviewRepository extends BaseAIReviewRepository {
 
     return {
       model: this.MODEL_NAME,
+      system: SYSTEM_PROMPTS,
       messages: [
-        {
-          role: 'system',
-          content: SYSTEM_PROMPTS,
-        },
         {
           role: 'user',
           content: `${rulePrompts}\n\n${prompt}`,
         },
       ],
       temperature: 0.1,
+      max_tokens: 4000,
     };
   }
 
   protected extractResponseContent(data: any): string {
-    const content = data.choices[0].message.content;
+    if (!data.content || !Array.isArray(data.content) || data.content.length === 0) {
+      throw new Error('Unexpected response format from Claude API');
+    }
+
+    // Claude API returns content as an array of blocks
+    const textBlocks = data.content
+      .filter((block: any) => block.type === 'text')
+      .map((block: any) => block.text);
+
+    const content = textBlocks.join('\n');
     return this.formatResponseWithClickableLinks(content);
   }
 }
