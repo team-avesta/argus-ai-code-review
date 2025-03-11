@@ -1,6 +1,6 @@
 {
   "name": "@team-avesta/avesta-code-review",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A CLI-based code review tool to analyze and enforce best practices",
   "main": "dist/index-rule.js",
   "bin": {
