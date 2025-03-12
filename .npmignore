@@ -24,7 +24,6 @@ tsconfig.tsbuildinfo
 
 # Development files
 node_modules/
-prompts/
 SOP/
 docs/
 
