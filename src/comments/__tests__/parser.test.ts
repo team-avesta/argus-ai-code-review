@@ -5,7 +5,7 @@ describe('Comment Parser', () => {
   describe('Basic Comment Detection', () => {
     it('should detect disable-next-line comments', () => {
       const source = `
-// avesta-disable-next-line rule1
+// argus-disable-next-line rule1
 const test = true;
       `.trim();
 
@@ -15,7 +15,7 @@ const test = true;
 
     it('should detect file-level disable comments', () => {
       const source = `
-/* avesta-disable rule1 */
+/* argus-disable rule1 */
 const test = true;
       `.trim();
 
@@ -26,7 +26,7 @@ const test = true;
 
     it('should parse multiple rules in single comment', () => {
       const source = `
-// avesta-disable-next-line rule1, rule2
+// argus-disable-next-line rule1, rule2
 const test = true;
       `.trim();
 
@@ -36,10 +36,10 @@ const test = true;
 
     it('should handle whitespace variations', () => {
       const sources = [
-        '//avesta-disable-next-line rule1',
-        '//  avesta-disable-next-line   rule1',
-        '//avesta-disable-next-line rule1,rule2',
-        '//avesta-disable-next-line rule1 ,  rule2',
+        '//argus-disable-next-line rule1',
+        '//  argus-disable-next-line   rule1',
+        '//argus-disable-next-line rule1,rule2',
+        '//argus-disable-next-line rule1 ,  rule2',
       ];
 
       sources.forEach((source) => {
@@ -53,9 +53,9 @@ const test = true;
   describe('Rule State Management', () => {
     it('should track disabled rules per line', () => {
       const source = `
-// avesta-disable-next-line rule1
+// argus-disable-next-line rule1
 const a = 1;
-// avesta-disable-next-line rule2
+// argus-disable-next-line rule2
 const b = 2;
       `.trim();
 
@@ -66,9 +66,9 @@ const b = 2;
 
     it('should manage file-level disabled rules', () => {
       const source = `
-/* avesta-disable rule1 */
+/* argus-disable rule1 */
 const a = 1;
-/* avesta-disable rule2 */
+/* argus-disable rule2 */
 const b = 2;
       `.trim();
 
@@ -78,8 +78,8 @@ const b = 2;
 
     it('should handle multiple disable comments on consecutive lines', () => {
       const source = `
-// avesta-disable-next-line rule1
-// avesta-disable-next-line rule2
+// argus-disable-next-line rule1
+// argus-disable-next-line rule2
 const test = true;
       `.trim();
 
@@ -100,7 +100,7 @@ const test = true;
       ];
 
       invalidRuleNames.forEach((ruleName) => {
-        const source = `// avesta-disable-next-line ${ruleName}`;
+        const source = `// argus-disable-next-line ${ruleName}`;
         expect(() => parseComments({ source, filename: 'test.ts' })).toThrow(InvalidRuleNameError);
       });
     });
@@ -108,11 +108,11 @@ const test = true;
     it('should throw on invalid comment formats', () => {
       const invalidComments = [
         '// disable-next-line rule1', // missing prefix
-        '// avesta-disable-something rule1', // invalid type
-        '// avesta-disable-next-line', // missing rules
-        '/* avesta-disable */', // missing rules
-        '// avesta-disable-next-line ,rule1', // invalid comma placement
-        '// avesta-disable-next-line rule1,,rule2', // double comma
+        '// argus-disable-something rule1', // invalid type
+        '// argus-disable-next-line', // missing rules
+        '/* argus-disable */', // missing rules
+        '// argus-disable-next-line ,rule1', // invalid comma placement
+        '// argus-disable-next-line rule1,,rule2', // double comma
       ];
 
       invalidComments.forEach((source) => {
@@ -133,7 +133,7 @@ const test = true;
       const source = `
 // Just a regular comment
 /* Another comment */
-// avesta-disable-next-line rule1
+// argus-disable-next-line rule1
       `.trim();
 
       const result = parseComments({ source, filename: 'test.ts' });
@@ -141,20 +141,20 @@ const test = true;
     });
 
     it('should handle comments in template literals', () => {
-      const source = '`// avesta-disable-next-line rule1`';
+      const source = '`// argus-disable-next-line rule1`';
       const result = parseComments({ source, filename: 'test.ts' });
       expect(result.disabledLines.size).toBe(0); // Should ignore comments in strings
     });
 
     it('should handle comments in strings', () => {
-      const source = '"// avesta-disable-next-line rule1"';
+      const source = '"// argus-disable-next-line rule1"';
       const result = parseComments({ source, filename: 'test.ts' });
       expect(result.disabledLines.size).toBe(0); // Should ignore comments in strings
     });
 
     it('should handle mixed line endings', () => {
       const source =
-        '// avesta-disable-next-line rule1\r\nconst a = 1;\n// avesta-disable-next-line rule2\rconst b = 2;';
+        '// argus-disable-next-line rule1\r\nconst a = 1;\n// argus-disable-next-line rule2\rconst b = 2;';
       const result = parseComments({ source, filename: 'test.ts' });
       expect(result.disabledLines.get(2)).toEqual(new Set(['rule1']));
       expect(result.disabledLines.get(4)).toEqual(new Set(['rule2']));
@@ -164,10 +164,10 @@ const test = true;
   describe('Real World Examples', () => {
     it('should handle complex React component', () => {
       const source = `
-/* avesta-disable react-props-helper */
+/* argus-disable react-props-helper */
 import React from 'react';
 
-// avesta-disable-next-line handle-negative-first
+// argus-disable-next-line handle-negative-first
 function Component({ data }) {
   if (data.isValid) {
     return <div>{data.content}</div>;
@@ -183,12 +183,12 @@ function Component({ data }) {
 
     it('should handle multiple rules in TypeScript', () => {
       const source = `
-// avesta-disable-next-line handle-negative-first, react-props-helper
+// argus-disable-next-line handle-negative-first, react-props-helper
 class Service {
   constructor(private readonly client: Client) {}
   
   async process() {
-    /* avesta-disable handle-negative-first */
+    /* argus-disable handle-negative-first */
     if (this.client.isConnected) {
       return this.client.send();
     }
@@ -207,9 +207,9 @@ class Service {
   describe('JSX Comment Format', () => {
     it('should handle JSX comment format', () => {
       const sources = [
-        '{/* @avesta-disable-next-line rule1 */}',
-        '{/* @avesta-disable-next-line rule1,rule2 */}',
-        '{/* avesta-disable-next-line rule1 */}', // Also support without @
+        '{/* @argus-disable-next-line rule1 */}',
+        '{/* @argus-disable-next-line rule1,rule2 */}',
+        '{/* argus-disable-next-line rule1 */}', // Also support without @
       ];
 
       sources.forEach((source) => {

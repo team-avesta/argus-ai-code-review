@@ -8,9 +8,10 @@ Enforces proper configuration for query methods that implement the QueryConfig i
 
 ```typescript
 interface QueryConfig {
-  queryIdentifier: string;  // Required - Used as anchor for detection
-  prometheusLabels?: {      // Optional
-    query: string;          // Required if prometheusLabels is present
+  queryIdentifier: string; // Required - Used as anchor for detection
+  prometheusLabels?: {
+    // Optional
+    query: string; // Required if prometheusLabels is present
   };
 }
 ```
@@ -106,28 +107,29 @@ describe('query-config-validation', () => {
        docs: {
          description: 'Enforce proper QueryConfig interface implementation',
          category: 'Errors',
-         recommended: true
+         recommended: true,
        },
-       schema: [] // no options
+       schema: [], // no options
      },
      create(context) {
        return {
          ObjectExpression(node) {
            // Check for queryIdentifier property as anchor
            const hasQueryIdentifier = node.properties.some(
-             prop => prop.key.name === 'queryIdentifier'
+             (prop) => prop.key.name === 'queryIdentifier',
            );
-           
+
            if (hasQueryIdentifier) {
              // Validate full interface implementation
            }
-         }
+         },
        };
-     }
+     },
    };
    ```
 
 2. AST Visitor Implementation
+
    - Detect objects with queryIdentifier property
    - Validate full interface structure when detected
    - Check prometheusLabels.query if present
@@ -139,7 +141,7 @@ describe('query-config-validation', () => {
    const ERROR_MESSAGES = {
      MISSING_IDENTIFIER: 'Objects implementing QueryConfig must have queryIdentifier',
      EMPTY_QUERY: 'prometheusLabels.query must not be empty when prometheusLabels is provided',
-     INVALID_CONFIG: 'Object appears to implement QueryConfig but is missing required fields'
+     INVALID_CONFIG: 'Object appears to implement QueryConfig but is missing required fields',
    };
    ```
 
@@ -167,7 +169,7 @@ describe('query-config-validation', () => {
 ```json
 {
   "rules": {
-    "avesta/irev-base-query-config": "error"
+    "argus/irev-base-query-config": "error"
   }
 }
 ```
@@ -178,94 +180,95 @@ describe('query-config-validation', () => {
 
 ```typescript
 describe('Basic QueryConfig Detection', () => {
-  it('should detect object with queryIdentifier property')
-  it('should validate prometheusLabels when present')
-  it('should handle objects without queryIdentifier')
-  it('should detect multiple QueryConfig objects in same scope')
-  it('should handle variable assignments vs direct usage')
-})
+  it('should detect object with queryIdentifier property');
+  it('should validate prometheusLabels when present');
+  it('should handle objects without queryIdentifier');
+  it('should detect multiple QueryConfig objects in same scope');
+  it('should handle variable assignments vs direct usage');
+});
 ```
 
 ### 2. Structure Analysis Tests
 
 ```typescript
 describe('QueryConfig Structure Analysis', () => {
-  it('should validate queryIdentifier is string type')
-  it('should validate prometheusLabels object structure')
-  it('should validate query field in prometheusLabels')
-  it('should handle optional prometheusLabels')
-  it('should detect malformed prometheusLabels structure')
-  it('should handle spread operators in objects')
-})
+  it('should validate queryIdentifier is string type');
+  it('should validate prometheusLabels object structure');
+  it('should validate query field in prometheusLabels');
+  it('should handle optional prometheusLabels');
+  it('should detect malformed prometheusLabels structure');
+  it('should handle spread operators in objects');
+});
 ```
 
 ### 3. Configuration Tests
 
 ```typescript
 describe('Rule Configuration', () => {
-  it('should respect custom error messages')
-  it('should handle custom validation rules')
-  it('should respect ignored patterns')
-  it('should validate configuration values')
-  it('should handle missing configuration')
-})
+  it('should respect custom error messages');
+  it('should handle custom validation rules');
+  it('should respect ignored patterns');
+  it('should validate configuration values');
+  it('should handle missing configuration');
+});
 ```
 
 ### 4. Edge Cases Tests
 
 ```typescript
 describe('Edge Cases', () => {
-  it('should handle null/undefined values')
-  it('should handle dynamic property names')
-  it('should handle nested QueryConfig objects')
-  it('should handle destructured objects')
-  it('should handle template literals in values')
-  it('should handle function calls in values')
-})
+  it('should handle null/undefined values');
+  it('should handle dynamic property names');
+  it('should handle nested QueryConfig objects');
+  it('should handle destructured objects');
+  it('should handle template literals in values');
+  it('should handle function calls in values');
+});
 ```
 
 ### 5. Auto-fix Tests
 
 ```typescript
 describe('Auto-fix Suggestions', () => {
-  it('should suggest adding missing prometheusLabels')
-  it('should suggest fixing malformed structures')
-  it('should handle multiple fixes in same file')
-  it('should preserve existing comments')
-  it('should maintain code style')
-})
+  it('should suggest adding missing prometheusLabels');
+  it('should suggest fixing malformed structures');
+  it('should handle multiple fixes in same file');
+  it('should preserve existing comments');
+  it('should maintain code style');
+});
 ```
 
 ### 6. Performance Tests
 
 ```typescript
 describe('Performance', () => {
-  it('should handle large files efficiently')
-  it('should optimize object detection')
-  it('should cache validation results')
-  it('should handle multiple validations in same pass')
-})
+  it('should handle large files efficiently');
+  it('should optimize object detection');
+  it('should cache validation results');
+  it('should handle multiple validations in same pass');
+});
 ```
 
 ### 7. Integration Tests
 
 ```typescript
 describe('Integration', () => {
-  it('should work with TypeScript files')
-  it('should work with JavaScript files')
-  it('should handle different import patterns')
-  it('should work with different query function patterns')
-  it('should integrate with existing ESLint rules')
-})
+  it('should work with TypeScript files');
+  it('should work with JavaScript files');
+  it('should handle different import patterns');
+  it('should work with different query function patterns');
+  it('should integrate with existing ESLint rules');
+});
 ```
 
 ### 8. Error Message Tests
 
 ```typescript
 describe('Error Messages', () => {
-  it('should provide clear violation descriptions')
-  it('should include fix suggestions')
-  it('should show correct code snippets')
-  it('should handle multiple errors in same object')
-  it('should provide context-aware suggestions')
-})
+  it('should provide clear violation descriptions');
+  it('should include fix suggestions');
+  it('should show correct code snippets');
+  it('should handle multiple errors in same object');
+  it('should provide context-aware suggestions');
+});
+```

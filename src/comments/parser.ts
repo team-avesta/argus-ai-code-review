@@ -7,12 +7,12 @@ import {
 
 // Update patterns to support both JS and JSX comments
 const DISABLE_NEXT_LINE_PATTERN =
-  /^\s*(?:\/\/\s*|{?\s*\/\*\s*@?)avesta-disable-next-line\s+(.+?)(?:\s*\*\/\s*})?$/;
-const DISABLE_FILE_PATTERN = /(?:{?\s*)?\/\*\s*(?:@?)avesta-disable\s+(.+?)\s*\*\/\s*}?/;
+  /^\s*(?:\/\/\s*|{?\s*\/\*\s*@?)argus-disable-next-line\s+(.+?)(?:\s*\*\/\s*})?$/;
+const DISABLE_FILE_PATTERN = /(?:{?\s*)?\/\*\s*(?:@?)argus-disable\s+(.+?)\s*\*\/\s*}?/;
 const RULE_NAME_PATTERN = /^[a-z0-9-]+$/;
-const COMMENT_START_PATTERN = /^\s*(?:\/\/|{?\s*\/\*)\s*(?:@?)avesta-disable/;
+const COMMENT_START_PATTERN = /^\s*(?:\/\/|{?\s*\/\*)\s*(?:@?)argus-disable/;
 const INVALID_COMMENT_PATTERN =
-  /^\s*(?:\/\/|{?\s*\/\*)\s*(?:@?)(?:disable|avesta-disable-(?!next-line)|avesta-disable\s*$)/;
+  /^\s*(?:\/\/|{?\s*\/\*)\s*(?:@?)(?:disable|argus-disable-(?!next-line)|argus-disable\s*$)/;
 
 /**
  * Validates a rule name against the allowed pattern
@@ -59,7 +59,7 @@ function isCommentInString(line: string): boolean {
   const stringMatch = line.match(/(['"`])(.*?)\1/g);
   if (!stringMatch) return false;
 
-  return stringMatch.some((str) => str.includes('avesta-disable'));
+  return stringMatch.some((str) => str.includes('argus-disable'));
 }
 
 /**
@@ -121,7 +121,7 @@ function processLine(lines: string[], currentIndex: number, state: DisableState)
   }
 
   // First check if it's a disable comment
-  if (!trimmedLine.includes('avesta-disable')) {
+  if (!trimmedLine.includes('argus-disable')) {
     return;
   }
 
@@ -145,7 +145,7 @@ function processLine(lines: string[], currentIndex: number, state: DisableState)
   }
 
   // Handle file-level disable comments
-  if (trimmedLine.includes('/* avesta-disable')) {
+  if (trimmedLine.includes('/* argus-disable')) {
     const match = DISABLE_FILE_PATTERN.exec(trimmedLine);
     if (!match) {
       throw new InvalidCommentError('Invalid file-level disable comment format');

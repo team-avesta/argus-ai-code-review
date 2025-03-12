@@ -24,7 +24,6 @@ export class AIRepositoryFactory {
       return new OpenAIReviewRepository(config);
     } else {
       // Default to OpenAI if model doesn't match known patterns
-      console.warn(`Unknown model "${model}", defaulting to OpenAI`);
       return new OpenAIReviewRepository(config);
     }
   }

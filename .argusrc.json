@@ -1,6 +1,6 @@
 {
   "plugins": [
-    "avesta-code-review"
+    "argus-ai-code-review"
   ],
   "settings": {
     "aiReview": {
@@ -29,7 +29,7 @@
     }
   },
   "rules": {
-    "avesta-code-review/react-props-helper": [
+    "argus-ai-code-review/react-props-helper": [
       "error",
       {
         "complexity": {
@@ -40,8 +40,8 @@
         }
       }
     ],
-    "avesta-code-review/prometheus-label-config": "error",
-    "avesta-code-review/handle-negative-first": [
+    "argus-ai-code-review/prometheus-label-config": "error",
+    "argus-ai-code-review/handle-negative-first": [
       "error",
       {
         "maxNestingDepth": 1,

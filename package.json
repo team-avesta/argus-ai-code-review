@@ -1,17 +1,17 @@
 {
-  "name": "@team-avesta/avesta-code-review",
+  "name": "@team-avesta/argus-ai-code-review",
   "version": "1.2.0",
   "description": "A CLI-based code review tool to analyze and enforce best practices",
   "main": "dist/index-rule.js",
   "bin": {
-    "avesta-code-review": "./dist/index.js"
+    "argus-ai-code-review": "./dist/index.js"
   },
   "exports": {
     ".": "./dist/index-rule.js"
   },
   "eslintConfig": {
     "plugins": [
-      "avesta-code-review"
+      "argus-ai-code-review"
     ]
   },
   "scripts": {
@@ -41,12 +41,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/team-avesta/avesta-code-review.git"
+    "url": "git+https://github.com/team-avesta/argus-ai-code-review.git"
   },
   "bugs": {
-    "url": "https://github.com/team-avesta/avesta-code-review/issues"
+    "url": "https://github.com/team-avesta/argus-ai-code-review/issues"
   },
-  "homepage": "https://github.com/team-avesta/avesta-code-review#readme",
+  "homepage": "https://github.com/team-avesta/argus-ai-code-review#readme",
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",

@@ -8,11 +8,11 @@ describe('Plugin Configuration', () => {
       baseConfig: {
         parser: '@typescript-eslint/parser',
         extends: [], // Prevent inheriting any recommended configs
-        plugins: ['avesta-code-review'],
+        plugins: ['argus-ai-code-review'],
         rules: {},
       },
       plugins: {
-        'avesta-code-review': plugin,
+        'argus-ai-code-review': plugin,
       },
       useEslintrc: false,
     } as any);

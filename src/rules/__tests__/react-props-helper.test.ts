@@ -14,7 +14,7 @@ const ruleTester = new RuleTester({
 });
 
 // Test cases with TypeScript types and interfaces
-ruleTester.run('avesta-code-review/react-props-helper', rule, {
+ruleTester.run('argus-ai-code-review/react-props-helper', rule, {
   valid: [
     {
       code: `

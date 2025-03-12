@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the process for adding new AI review rules to the Avesta Code Review system. These rules are used by the AI to analyze code and provide feedback based on specific patterns and best practices.
+This document outlines the process for adding new AI review rules to the Argus AI Code Review system. These rules are used by the AI to analyze code and provide feedback based on specific patterns and best practices.
 
 ## Rule Creation Process
 

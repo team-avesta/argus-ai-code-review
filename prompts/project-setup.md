@@ -1,9 +1,11 @@
-# Avesta Code Review Tool - Project Setup Guide
+# Argus AI Code Review Tool - Project Setup Guide
 
 ## Project Overview
+
 A CLI-based code review tool built with TypeScript to analyze and enforce best practices in both frontend and backend projects.
 
 ## Tech Stack
+
 - Language: TypeScript
 - Runtime: Node.js
 - Package Manager: npm
@@ -13,8 +15,9 @@ A CLI-based code review tool built with TypeScript to analyze and enforce best p
 - AST Parser: TypeScript Compiler API
 
 ## Project Structure
+
 ```
-avesta-code-review/
+argus-ai-code-review/
 ├── src/
 │   ├── cli/           # CLI command handlers
 │   ├── analyzers/     # Code analysis modules
@@ -36,19 +39,22 @@ avesta-code-review/
 ## Setup Steps
 
 1. Initialize Project
+
 ```bash
-mkdir avesta-code-review
-cd avesta-code-review
+mkdir argus-ai-code-review
+cd argus-ai-code-review
 npm init
 ```
 
 2. Install Core Dependencies
+
 ```bash
 npm install -D typescript @types/node ts-node
 npm install commander chalk glob
 ```
 
 3. Install Development Dependencies
+
 ```bash
 npm install -D jest @types/jest ts-jest
 npm install -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
@@ -56,6 +62,7 @@ npm install -D prettier eslint-config-prettier eslint-plugin-prettier
 ```
 
 4. Configure TypeScript (`tsconfig.json`)
+
 ```json
 {
   "compilerOptions": {
@@ -76,24 +83,23 @@ npm install -D prettier eslint-config-prettier eslint-plugin-prettier
 ```
 
 5. Configure ESLint (`.eslintrc.js`)
+
 ```javascript
 module.exports = {
   parser: '@typescript-eslint/parser',
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
-  ],
+  extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
   parserOptions: {
     ecmaVersion: 2020,
-    sourceType: 'module'
+    sourceType: 'module',
   },
   rules: {
     // Custom rules here
-  }
+  },
 };
 ```
 
 6. Configure Prettier (`.prettierrc`)
+
 ```json
 {
   "semi": true,
@@ -105,6 +111,7 @@ module.exports = {
 ```
 
 7. Update `package.json` Scripts
+
 ```json
 {
   "scripts": {
@@ -121,16 +128,19 @@ module.exports = {
 ## Core Features to Implement
 
 1. CLI Interface
+
    - Command-line argument parsing
    - Configuration file support
    - Interactive mode
 
 2. Code Analysis
+
    - TypeScript AST parsing
    - Pattern matching
    - Best practices validation
 
 3. Rule Engine
+
    - Custom rule definitions
    - Rule severity levels
    - Rule configuration

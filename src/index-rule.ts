@@ -30,7 +30,7 @@ const processors: Record<string, Linter.Processor> = {
       // Filter out messages for disabled rules
       return messages[0].filter((message) => {
         const line = message.line;
-        const ruleId = message.ruleId?.replace('avesta-code-review/', '');
+        const ruleId = message.ruleId?.replace('argus-ai-code-review/', '');
 
         if (!ruleId) return true;
 
@@ -62,7 +62,7 @@ const processors: Record<string, Linter.Processor> = {
 
       return messages[0].filter((message) => {
         const line = message.line;
-        const ruleId = message.ruleId?.replace('avesta-code-review/', '');
+        const ruleId = message.ruleId?.replace('argus-ai-code-review/', '');
         if (!ruleId) return true;
         const lineDisabled = state.disabledLines.get(line);
         if (lineDisabled?.has(ruleId)) return false;

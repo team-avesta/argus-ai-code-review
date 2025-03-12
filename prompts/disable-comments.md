@@ -2,7 +2,7 @@
 
 ## Overview
 
-This pattern allows disabling Avesta rules at different scopes using special comments, providing flexibility in rule enforcement while maintaining code quality.
+This pattern allows disabling Argus rules at different scopes using special comments, providing flexibility in rule enforcement while maintaining code quality.
 
 ## Rule Description
 
@@ -29,7 +29,7 @@ function complexFunction() {  // Unclear which line is affected
 
 ```typescript
 // ✅ Good Practice
-// avesta-disable-next-line handle-negative-first
+// argus-disable-next-line handle-negative-first
 function complexFunction() {  // This line is disabled
   // Comment must be placed BEFORE the line you want to disable
 }
@@ -44,7 +44,7 @@ Note: Comments must always be placed on the line BEFORE the code you want to dis
 // Entire file has all rules disabled without explanation
 
 // ✅ Good Practice
-/* avesta-disable react-props-helper */
+/* argus-disable react-props-helper */
 // Specific rule disabled for file with clear intent
 ````
 
@@ -141,7 +141,7 @@ interface CommentParserOptions {
 1. **Single Rule Disable**
 
 ```typescript
-// avesta-disable-next-line handle-negative-first
+// argus-disable-next-line handle-negative-first
 function complexCondition() {
   if (condition) {
     // Complex logic here
@@ -152,7 +152,7 @@ function complexCondition() {
 2. **Multiple Rules Disable**
 
 ```typescript
-// avesta-disable-next-line handle-negative-first, react-props-helper
+// argus-disable-next-line handle-negative-first, react-props-helper
 const Component = () => {
   // Complex component logic
 };
@@ -161,7 +161,7 @@ const Component = () => {
 3. **File Level Disable**
 
 ```typescript
-/* avesta-disable handle-negative-first */
+/* argus-disable handle-negative-first */
 // Entire file has handle-negative-first rule disabled
 ```
 
@@ -193,9 +193,9 @@ The comment system uses the following built-in conventions that cannot be change
 
 1. **Fixed Prefixes**
 
-   - `avesta-disable-next-line`
-   - `avesta-disable`
+   - `argus-disable-next-line`
+   - `argus-disable`
 
 2. **Multiple Rules Support**
    - Comments always support disabling multiple rules using comma separation
-   - Example: `// avesta-disable-next-line rule1, rule2`
+   - Example: `// argus-disable-next-line rule1, rule2`

@@ -1,6 +1,6 @@
-# Avesta Code Review Rules
+# Argus AI Code Review Rules
 
-This directory contains documentation for all available rules in the Avesta Code Review tool.
+This directory contains documentation for all available rules in the Argus AI Code Review tool.
 
 ## Available Rules
 
@@ -28,7 +28,7 @@ Rules that help enforce best practices and improve code quality:
 
 ## Configuration
 
-You can configure these rules in your `.avestarc.json` file:
+You can configure these rules in your `.argusrc.json` file:
 
 ```json
 {
@@ -70,21 +70,21 @@ You can disable rules using special comments in your code:
 
 ```typescript
 // Disable a single rule for next line
-// avesta-disable-next-line handle-negative-first
+// argus-disable-next-line handle-negative-first
 function someFunction() { ... }
 
 // Disable multiple rules for next line
-// avesta-disable-next-line handle-negative-first, react-props-helper
+// argus-disable-next-line handle-negative-first, react-props-helper
 function anotherFunction() { ... }
 ```
 
 ### File Level Disabling
 
 ```typescript
-/* avesta-disable handle-negative-first */
+/* argus-disable handle-negative-first */
 // Entire file will have handle-negative-first rule disabled
 
-/* avesta-disable handle-negative-first, react-props-helper */
+/* argus-disable handle-negative-first, react-props-helper */
 // Multiple rules can be disabled for the entire file
 ```
 

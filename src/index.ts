@@ -18,7 +18,7 @@ const plugin = {
 const program = new Command();
 
 program
-  .name('avesta-code-review')
+  .name('argus-ai-code-review')
   .description('CLI tool for automated code review and best practices analysis')
   .version('1.0.0');
 
@@ -36,7 +36,7 @@ program
   .command('check')
   .description('Check files for rule violations')
   .argument('<patterns...>', 'Files or glob patterns to check (e.g., "src/**/*.tsx")')
-  .option('-c, --config <path>', 'Path to config file', '.avestarc.json')
+  .option('-c, --config <path>', 'Path to config file', '.argusrc.json')
   .action(async (patterns: string[], options) => {
     try {
       const files = await glob(patterns, { ignore: ['node_modules/**'] });
@@ -58,22 +58,22 @@ program
             },
           },
           extends: [],
-          plugins: ['@typescript-eslint', 'avesta-code-review'],
+          plugins: ['@typescript-eslint', 'argus-ai-code-review'],
           rules: {},
           ignorePatterns: ['node_modules/**'],
           env: {
             node: true,
             es6: true,
           },
-          processor: 'avesta-code-review/.ts',
+          processor: 'argus-ai-code-review/.ts',
         },
         plugins: {
-          'avesta-code-review': plugin,
+          'argus-ai-code-review': plugin,
         },
         overrideConfigFile: options.config,
         useEslintrc: false,
         overrideConfig: {
-          plugins: ['avesta-code-review'],
+          plugins: ['argus-ai-code-review'],
           rules: {},
         },
       };
