@@ -1,6 +1,6 @@
 {
   "name": "@team-avesta/argus-ai-code-review",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A CLI-based code review tool to analyze and enforce best practices",
   "main": "dist/index-rule.js",
   "bin": {
