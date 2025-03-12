@@ -32,7 +32,14 @@
     "code-review",
     "typescript",
     "cli",
-    "best-practices"
+    "best-practices",
+    "static-analysis",
+    "linter",
+    "code-quality",
+    "ai-powered",
+    "developer-tools",
+    "automated-review",
+    "code-standards"
   ],
   "author": "Team Avesta",
   "license": "ISC",
