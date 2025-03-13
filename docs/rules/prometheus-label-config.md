@@ -22,27 +22,27 @@ A QueryConfig object must meet these criteria:
 ```typescript
 // Missing prometheusLabels.query
 const badConfig1 = {
-  queryIdentifier: 'get_users'
+  queryIdentifier: 'get_users',
 };
 
 // Empty query value in prometheusLabels
 const badConfig2 = {
   queryIdentifier: 'list_items',
   prometheusLabels: {
-    query: ''  // Empty string not allowed
-  }
+    query: '', // Empty string not allowed
+  },
 };
 
 // Malformed prometheusLabels structure
 const badConfig3 = {
   queryIdentifier: 'count_records',
-  prometheusLabels: {}  // Missing required query field
+  prometheusLabels: {}, // Missing required query field
 };
 
 // Direct usage in query methods
 async function badQuery() {
   return executeQuery('SELECT * FROM users', {
-    queryIdentifier: 'get_users'  // Missing prometheusLabels
+    queryIdentifier: 'get_users', // Missing prometheusLabels
   });
 }
 ```
@@ -54,8 +54,8 @@ async function badQuery() {
 const goodConfig1 = {
   queryIdentifier: 'get_users',
   prometheusLabels: {
-    query: 'select_users_by_id'
-  }
+    query: 'select_users_by_id',
+  },
 };
 
 // TypeScript interface implementation
@@ -69,8 +69,8 @@ interface QueryConfig {
 const goodConfig2: QueryConfig = {
   queryIdentifier: 'list_items',
   prometheusLabels: {
-    query: 'list_active_items'
-  }
+    query: 'list_active_items',
+  },
 };
 
 // Usage in query methods
@@ -78,9 +78,25 @@ async function goodQuery() {
   return executeQuery('SELECT * FROM users', {
     queryIdentifier: 'get_users',
     prometheusLabels: {
-      query: 'select_users_query'
-    }
+      query: 'select_users_query',
+    },
   });
+}
+```
+
+## Configuration
+
+This rule is configured in the `rules["argus-ai-code-review/prometheus-label-config"]` section of your `.argusrc.json` file.
+
+For detailed configuration options, see the [Configuration Reference](../configuration.md#eslint-rules-configuration).
+
+This rule does not have any options and can be enabled with:
+
+```json
+{
+  "rules": {
+    "argus-ai-code-review/prometheus-label-config": "error"
+  }
 }
 ```
 

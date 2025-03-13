@@ -39,10 +39,25 @@
     "ai-powered",
     "developer-tools",
     "automated-review",
-    "code-standards"
+    "code-standards",
+    "ai-code-review"
   ],
   "author": "Team Avesta",
-  "license": "ISC",
+  "contributors": [
+    {
+      "name": "Bhautik Desai",
+      "email": "bhautik.desai@avestatechnologies.com"
+    },
+    {
+      "name": "Madhav Pujara",
+      "email": "madhav.pujara@avestatechnologies.com"
+    },
+    {
+      "name": "Vivek Satasiya",
+      "email": "satasiyavivek@gmail.com"
+    }
+  ],
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },

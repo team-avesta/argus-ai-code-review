@@ -108,95 +108,22 @@ function getStatus(code) {
 
 ## Options
 
-```json
-{
-  "handle-negative-first": [
-    "error",
-    {
-      "maxNestingDepth": 1,
-      "enforceThrow": false,
-      "allowSingleNesting": false,
-      "checkArrowFunctions": true,
-      "checkAsyncFunctions": true,
-      "checkGenerators": true,
-      "checkTernaries": true,
-      "checkTryCatch": true,
-      "enforceEarlyReturn": true,
-      "maxElseDepth": 2
-    }
-  ]
-}
-```
+This rule is configured in the `rules["argus-ai-code-review/handle-negative-first"]` section of your `.argusrc.json` file.
 
-### maxNestingDepth
+For detailed configuration options, see the [Configuration Reference](../configuration.md#eslint-rules-configuration).
 
-Type: `number`  
-Default: `1`
+### Key Options
 
-Maximum allowed nesting depth for conditional statements. A value of 1 means no nesting is allowed.
-
-### enforceThrow
-
-Type: `boolean`  
-Default: `false`
-
-When true, requires negative conditions to throw errors instead of returning values.
-
-### allowSingleNesting
-
-Type: `boolean`  
-Default: `false`
-
-When true, allows a single level of nesting without requiring negative conditions.
-
-### checkArrowFunctions
-
-Type: `boolean`  
-Default: `true`
-
-Whether to check arrow functions for compliance with the rule.
-
-### checkAsyncFunctions
-
-Type: `boolean`  
-Default: `true`
-
-Whether to check async functions for compliance with the rule.
-
-### checkGenerators
-
-Type: `boolean`  
-Default: `true`
-
-Whether to check generator functions for compliance with the rule.
-
-### checkTernaries
-
-Type: `boolean`  
-Default: `true`
-
-Whether to check ternary expressions for nesting violations.
-
-### checkTryCatch
-
-Type: `boolean`  
-Default: `true`
-
-Whether to check if statements inside try/catch blocks.
-
-### enforceEarlyReturn
-
-Type: `boolean`  
-Default: `true`
-
-When true, enforces using early returns instead of else blocks.
-
-### maxElseDepth
-
-Type: `number`  
-Default: `2`
-
-Maximum allowed depth of else/else-if chains.
+- **maxNestingDepth**: Maximum allowed nesting depth for conditional statements (default: `1`)
+- **enforceThrow**: When true, requires negative conditions to throw errors instead of returning values (default: `false`)
+- **allowSingleNesting**: When true, allows a single level of nesting without requiring negative conditions (default: `false`)
+- **checkArrowFunctions**: Whether to check arrow functions for compliance with the rule (default: `true`)
+- **checkAsyncFunctions**: Whether to check async functions for compliance with the rule (default: `true`)
+- **checkGenerators**: Whether to check generator functions for compliance with the rule (default: `true`)
+- **checkTernaries**: Whether to check ternary expressions for nesting violations (default: `true`)
+- **checkTryCatch**: Whether to check if statements inside try/catch blocks (default: `true`)
+- **enforceEarlyReturn**: When true, enforces using early returns instead of else blocks (default: `true`)
+- **maxElseDepth**: Maximum allowed depth of else/else-if chains (default: `2`)
 
 ## When Not To Use It
 

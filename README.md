@@ -14,48 +14,82 @@ A CLI tool for automated code review and best practices analysis in TypeScript p
 
 ## Installation
 
+### Prerequisites
+
+1. Make sure you have Node.js installed (version 14 or higher)
+2. Set up your API key as an environment variable if you plan to use AI review:
+
+```bash
+export AI_PROVIDER_API_KEY=your_api_key_here
+```
+
 ### From npm (recommended)
 
 ```bash
-# Install globally
-npm install -g @team-avesta/argus-ai-code-review
-
-# Or install locally in your project
+# Install locally in your project (recommended)
 npm install --save-dev @team-avesta/argus-ai-code-review
+
+# Or install globally
+npm install -g @team-avesta/argus-ai-code-review
 ```
 
-### From source
+## Getting Started
+
+1. **Create Configuration File**: First, create a `.argusrc.json` file in your project root with your desired rules and settings (see Configuration section below for details).
+
+2. **Run the Tool**: After setting up your configuration file, you can run the tool using one of the following commands:
 
 ```bash
-# Clone the repository
-git clone https://github.com/team-avesta/argus-ai-code-review.git
-
-# Navigate to project directory
-cd argus-ai-code-review
-
-# Install dependencies
-npm install
-
-# Build the project
-npm run build
-
-# Create a global symlink (optional)
-npm link
-```
-
-## Usage
-
-```bash
-# Basic usage
+# Basic usage (runs ESLint rules on all files in the path)
 argus-ai-code-review check <path-to-code>
 
-# With custom config
+# Example: Check the src directory
+npx argus-ai-code-review check "src/modules/**/*(*.js|*.jsx|*.ts|*.tsx)"
+
+# With custom config location
 argus-ai-code-review check <path-to-code> --config <path-to-config>
+
+# Example: Check with a custom config file
+npx argus-ai-code-review check "src/modules/**/*(*.js|*.jsx|*.ts|*.tsx)" --config ./custom-argus-config.json
+
+# Run on staged files only (both ESLint rules and AI review)
+argus-ai-code-review check --staged
+
+# Run on specific files
+argus-ai-code-review check path/to/file1.ts path/to/file2.ts
+
+# Example: Check specific files
+argus-ai-code-review check src/modules/demo.tsx ./src/utils/helpers.ts
+
+# Run with verbose output
+argus-ai-code-review check <path-to-code> --verbose
 ```
+
+> **Note**: When running without the `--staged` flag, only ESLint rules will be applied to all matching files. The AI-powered code review is only triggered when using the `--staged` flag and will only analyze staged files and their diff code to optimize performance and reduce API costs.
+
+## How It Works
+
+The tool operates in two distinct modes:
+
+- **ESLint Rules**: Run on all files in the specified path. These static analysis rules are applied to every file that matches your path pattern.
+- **AI Review**: Only runs on staged files and diff code to optimize performance and reduce API costs. The AI review focuses specifically on changes you're about to commit, providing targeted feedback on your modifications.
+
+This dual approach ensures comprehensive code quality while keeping AI API usage efficient and cost-effective.
+
+### Review Scope Differences
+
+| Review Type       | Files Analyzed                        | When to Use                                          |
+| ----------------- | ------------------------------------- | ---------------------------------------------------- |
+| ESLint Rules      | All files matching the specified path | For regular code quality checks across your codebase |
+| AI-powered Review | Only staged files and their diff code | When preparing to commit changes                     |
 
 ## Configuration
 
-Create a `.argusrc.json` file in your project root:
+Create a `.argusrc.json` file in your project root before running any commands. This configuration file is required for the tool to work properly.
+
+For a comprehensive reference of all configuration options, see the [Configuration Reference](docs/configuration.md).
+
+Below is a basic example configuration:
 
 ```json
 {
@@ -71,35 +105,19 @@ Create a `.argusrc.json` file in your project root:
       }
     ],
     "argus-ai-code-review/prometheus-label-config": "error",
-    "argus-ai-code-review/handle-negative-first": [
-      "error",
-      {
-        "maxNestingDepth": 1,
-        "enforceThrow": false,
-        "allowSingleNesting": false,
-        "checkArrowFunctions": true,
-        "checkAsyncFunctions": true,
-        "checkGenerators": true,
-        "checkTernaries": true,
-        "checkTryCatch": true,
-        "enforceEarlyReturn": true,
-        "maxElseDepth": 2
-      }
-    ]
+    "argus-ai-code-review/handle-negative-first": "error"
   },
   "settings": {
     "aiReview": {
       "enabled": true,
       "model": "gpt-4-turbo-preview",
-      "ignorePatterns": ["**/*.test.ts", "**/*.spec.ts"],
       "rules": {
         "function-length": {
           "enabled": true,
           "maxLines": 20
         },
         "function-complexity": {
-          "enabled": true,
-          "metrics": ["cyclomatic", "cognitive"]
+          "enabled": true
         },
         "single-responsibility": {
           "enabled": true
@@ -132,31 +150,13 @@ The same environment variable is used for all AI providers. Make sure to use the
 
 ## Available Rules
 
-### react-props-helper
+The tool includes several ESLint rules to enforce best practices in your codebase. Each rule has detailed documentation available in the docs/rules directory:
 
-Enforces best practices for React props complexity:
+- [react-props-helper](docs/rules/react-props-helper.md) - Enforces best practices for React props complexity
+- [prometheus-label-config](docs/rules/prometheus-label-config.md) - Validates Prometheus label configurations
+- [handle-negative-first](docs/rules/handle-negative-first.md) - Enforces handling negative conditions first
 
-- Limits inline props
-- Controls ternary operation nesting
-- Configurable prop ignoring
-
-### prometheus-label-config
-
-Validates Prometheus label configurations:
-
-- Enforces proper query structure
-- Validates label format
-- Prevents empty queries
-
-### handle-negative-first
-
-Enforces handling negative conditions first to improve code readability and maintainability:
-
-- Limits nesting depth of conditional statements
-- Enforces early returns for negative conditions
-- Configurable options for different function types
-- Checks ternary expressions
-- Controls maximum else depth
+For detailed configuration options and examples, please refer to the individual rule documentation.
 
 ## AI-Powered Code Review
 
@@ -166,43 +166,34 @@ The tool includes an AI-powered code review feature that can use either OpenAI o
 - Function complexity
 - Single responsibility principle violations
 
+**Important**: Unlike ESLint rules which run on all files, AI review only runs on staged files and diff code to optimize performance and reduce API costs. This means you must stage your changes with `git add` before running the AI review.
+
+### AI Rules
+
+The tool includes several AI-powered rules to analyze your code. Each rule has detailed documentation available in the docs/ai-rules directory:
+
+- [function-length](docs/ai-rules/function-length.md) - Analyzes function length to identify overly long functions
+- [function-complexity](docs/ai-rules/function-complexity.md) - Analyzes the complexity of functions using metrics like cyclomatic and cognitive complexity
+- [single-responsibility](docs/ai-rules/single-responsibility.md) - Ensures functions and classes adhere to the Single Responsibility Principle
+
+For detailed configuration options and examples, please refer to the individual rule documentation.
+
+### Using AI Review
+
 To use this feature:
 
-1. Set up your API key as an environment variable:
+1. Create a `.argusrc.json` file with AI review settings (if not already done). See the [Configuration Reference](docs/configuration.md#ai-review-configuration) for all available options.
+
+2. Set up your API key as an environment variable (if not already done during installation):
 
    ```bash
    export AI_PROVIDER_API_KEY=your_api_key_here
    ```
 
-2. Configure AI review in your `.argusrc.json` configuration:
-
-   ```json
-   "settings": {
-     "aiReview": {
-       "enabled": true,
-       "model": "gpt-4-turbo-preview", // or "claude-3-opus-20240229"
-       "ignorePatterns": ["**/*.test.ts", "**/*.spec.ts"],
-       "rules": {
-         "function-length": {
-           "enabled": true,
-           "maxLines": 20
-         },
-         "function-complexity": {
-           "enabled": true,
-           "metrics": ["cyclomatic", "cognitive"]
-         },
-         "single-responsibility": {
-           "enabled": true
-         }
-       }
-     }
-   }
-   ```
-
-3. Run the check command as usual:
+3. Run the check command on staged files:
 
    ```bash
-   argus-ai-code-review check <path-to-code>
+   argus-ai-code-review check --staged
    ```
 
 You can exclude specific code blocks from AI review by using the `@ai-review-ignore` markers in your comments:

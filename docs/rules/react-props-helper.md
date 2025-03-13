@@ -109,33 +109,15 @@ const InfoComponent = () => <Info content={getInfoContent(data)} />;
 
 ## Options
 
-```json
-{
-  "react-props-helper": [
-    "error",
-    {
-      "complexity": {
-        "maxInlineProps": 2, // Maximum number of properties allowed inline
-        "ignoreProps": ["style"] // Props to ignore from the rule
-      }
-    }
-  ]
-}
-```
+This rule is configured in the `rules["argus-ai-code-review/react-props-helper"]` section of your `.argusrc.json` file.
 
-### complexity.maxInlineProps
+For detailed configuration options, see the [Configuration Reference](../configuration.md#eslint-rules-configuration).
 
-Type: `number`  
-Default: `2`
+### Key Options
 
-Maximum number of properties allowed in an inline object literal before requiring extraction to a helper function. For nested components, this threshold is automatically lowered by 1.
-
-### complexity.ignoreProps
-
-Type: `string[]`  
-Default: `[]`
-
-List of prop names to ignore from this rule. Useful for props that commonly use inline objects (like `style`).
+- **complexity.maxInlineProps**: Maximum number of properties allowed inline (default: `2`)
+- **complexity.maxTernaryOperations**: Maximum number of ternary operations allowed in a prop (default: `1`)
+- **complexity.ignoreProps**: Array of prop names to ignore from the rule (default: `["style"]`)
 
 ## When Not To Use It
 
