@@ -8,6 +8,8 @@ on:
     paths-ignore:
       - 'CHANGELOG.md'
       - '**/README.md'
+  workflow_dispatch:
+    # This enables manual triggering
 
 # Explicitly set permissions for the GITHUB_TOKEN
 permissions:
