@@ -18,11 +18,17 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,8 +47,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --local user.email "bhautik.desai@avestatechnologies.com"
-          git config --local user.name "bhautik-at"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
 
       - name: Generate new version
         run: |
@@ -53,7 +59,9 @@ jobs:
 
       - name: Push changes
         run: |
-          # Force push the changes and tags
+          # Push with skip ci flag to prevent recursion
+          git remote set-url origin https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}
+          git commit --amend -m "$(git log -1 --pretty=%B) [skip ci]"
           git push && git push --follow-tags origin main
 
       - name: Publish to npm
