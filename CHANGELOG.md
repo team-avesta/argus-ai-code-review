@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/team-avesta/argus-ai-code-review/compare/v1.2.2...v1.4.0) (2025-03-20)
+
+
+### Features
+
+* add foundational documentation and licensing files ([2021618](https://github.com/team-avesta/argus-ai-code-review/commit/202161859138ddb8cd913df9873725ccdca953f5))
+* enhance line formatting in BaseAIReviewRepository ([96e5be8](https://github.com/team-avesta/argus-ai-code-review/commit/96e5be8230015888817f9310ac89dac17385d2b9))
+
+
+### Bug Fixes
+
+* update copyright year in LICENSE.md ([34d0247](https://github.com/team-avesta/argus-ai-code-review/commit/34d0247841b4bfb86e239d34faac9c54a0855fb5))
+
 ## [1.3.0](https://github.com/team-avesta/argus-ai-code-review/compare/v1.2.2...v1.3.0) (2025-03-18)
 
 
