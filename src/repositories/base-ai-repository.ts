@@ -1,4 +1,5 @@
 import * as fs from 'fs/promises';
+import chalk from 'chalk';
 
 interface FileDiff {
   path: string;
@@ -78,18 +79,31 @@ export abstract class BaseAIReviewRepository {
     }
   }
 
+  protected formatLine(line: string): string {
+    // File path line
+    if (line.startsWith('/')) {
+      return chalk.blue.underline(line);
+    }
+
+    // Error line with format: "line:col  error  description  rule"
+    if (line.includes('error')) {
+      const [location, ...rest] = line.split('  ').filter(Boolean);
+      if (location && rest.length > 0) {
+        return `${chalk.yellow(location)}  ${chalk.red('error')}  ${chalk.white(rest.join('  '))}`;
+      }
+    }
+
+    // Explanation lines starting with dash
+    if (line.startsWith('-')) {
+      return chalk.dim(line);
+    }
+
+    // Any other lines
+    return chalk.white(line);
+  }
+
   protected formatResponseWithClickableLinks(content: string): string {
-    // Convert the AI response to include clickable file paths with ESLint format
     const lines = content.split('\n');
-    return lines
-      .map((line) => {
-        // If it's a file path line (doesn't start with spaces), make it clickable
-        if (!line.startsWith('  ') && line.trim()) {
-          return line;
-        }
-        // For error lines, keep the format as is
-        return line;
-      })
-      .join('\n');
+    return lines.map((line) => this.formatLine(line)).join('\n');
   }
 }
